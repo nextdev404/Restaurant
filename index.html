@@ -332,10 +332,6 @@
                 class="hidden w-12 h-12 bg-primary text-white rounded-2xl shadow-sm flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/30">
                 <i class="fa-solid fa-plus"></i>
               </button>
-              <button
-                class="w-12 h-12 bg-white dark:bg-gray-800 rounded-2xl shadow-sm flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-primary transition-colors hidden sm:flex">
-                <i class="fa-solid fa-sliders"></i>
-              </button>
             </div>
           </header>
 
@@ -382,7 +378,7 @@
                 class="hidden items-center gap-2 px-3 py-2 rounded-xl border-2 border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-500 hover:border-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:border-red-600 transition-all text-xs font-bold shadow-sm active:scale-95"
                 title="Release this table">
                 <i class="fa-solid fa-door-open text-sm"></i>
-                <span>Release</span>
+                <span data-i18n="btn_release">Release</span>
               </button>
             </div>
           </div>
@@ -392,7 +388,7 @@
             <div class="flex bg-gray-100 dark:bg-gray-700 p-1.5 rounded-2xl mb-4">
               <button
                 class="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm bg-primary text-white order-type-btn"
-                data-type="Dine In" data-i18n="dine_in">Dine in</button>
+                data-type="Dine In" data-i18n="dine_in">Customer Order</button>
             </div>
           </div>
 
@@ -1189,6 +1185,80 @@
     </div>
   </div>
 
+  <!-- Add/Edit Category Modal -->
+  <div id="add-category-modal"
+    class="fixed inset-0 bg-gray-950/80 backdrop-blur-md z-[80] hidden flex items-center justify-center p-4 transition-all duration-500">
+    <div id="add-category-content"
+      class="bg-white dark:bg-gray-900 w-full max-w-md max-h-[90vh] rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] overflow-hidden transform scale-95 opacity-0 transition-all duration-500 border border-white/10 flex flex-col">
+
+      <!-- Compact Gradient Header -->
+      <div class="h-24 bg-gradient-to-br from-emerald-400 via-primary to-teal-500 relative flex-shrink-0">
+        <div
+          class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay">
+        </div>
+        <button onclick="closeCategoryModal()"
+          class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/30 transition-all flex items-center justify-center border border-white/20">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Floating Icon - Smaller on mobile -->
+      <div class="relative -mt-10 flex justify-center px-6 flex-shrink-0">
+        <div
+          class="w-20 h-20 rounded-2xl bg-white dark:bg-gray-800 shadow-xl flex items-center justify-center text-3xl text-primary border-4 border-white dark:border-gray-900 animate-bounce-slow">
+          <i id="category-icon-preview" class="fa-solid fa-tag"></i>
+        </div>
+      </div>
+
+      <!-- Scrollable Body -->
+      <div class="px-6 md:px-10 pb-8 pt-4 text-center overflow-y-auto custom-scrollbar">
+        <h2 id="category-modal-title" class="text-2xl font-black text-gray-800 dark:text-white tracking-tight mb-1">Add
+          New Category</h2>
+        <p class="text-sm text-gray-400 dark:text-gray-500 font-medium mb-6">Create a new section for your menu</p>
+
+        <!-- Form Rows -->
+        <div class="space-y-5 text-left mb-8">
+          <div class="group">
+            <label
+              class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2 px-1 group-focus-within:text-primary transition-colors">Category
+              Name</label>
+            <input type="text" id="category-name" placeholder="Name (e.g. Pizza, Pasta)"
+              class="w-full h-14 px-5 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border-2 border-transparent focus:border-primary/20 focus:bg-white dark:focus:bg-gray-800 outline-none transition-all font-bold text-gray-800 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 shadow-inner text-sm">
+          </div>
+
+          <div class="group">
+            <label
+              class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2 px-1 group-focus-within:text-primary transition-colors">Select
+              Icon</label>
+            <div id="icon-picker-grid"
+              class="grid grid-cols-6 gap-2 mb-3 max-h-32 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-transparent focus-within:border-primary/20 transition-all custom-scrollbar">
+              <!-- Icons injected via JS -->
+            </div>
+            <div class="relative">
+              <i class="fa-solid fa-magic absolute left-5 top-1/2 -translate-y-1/2 text-primary/40 text-lg"></i>
+              <input type="text" id="category-icon" placeholder="Or type fa-icon name..."
+                oninput="document.getElementById('category-icon-preview').className = 'fa-solid ' + (this.value || 'fa-tag')"
+                class="w-full h-14 pl-12 pr-5 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border-2 border-transparent focus:border-primary/20 focus:bg-white dark:focus:bg-gray-800 outline-none transition-all font-bold text-gray-800 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 shadow-inner text-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 sticky bottom-0 bg-white dark:bg-gray-900 pt-2">
+          <button onclick="closeCategoryModal()"
+            class="flex-1 py-3.5 px-4 rounded-xl border-2 border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 text-sm">Cancel</button>
+          <button onclick="saveCategory()" id="category-modal-btn"
+            class="flex-[1.5] py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black shadow-[0_12px_24px_-8px_rgba(16,185,129,0.5)] hover:shadow-[0_20px_32px_-12px_rgba(16,185,129,0.6)] hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-sparkles"></i>
+            <span>Save Category</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
   <!-- Global Alerts/Notifications -->
   <div id="toast"
     class="fixed top-6 right-6 left-6 md:left-auto bg-gray-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl transform translate-y-[-100px] md:translate-y-0 md:translate-x-40 opacity-0 transition-all duration-300 z-[70] flex items-center gap-3 pointer-events-none cursor-pointer min-w-[260px]"
@@ -1284,7 +1354,7 @@
         dark_mode: 'Dark Mode',
         // POS Cart
         current_order: 'Current Order',
-        dine_in: 'Dine In',
+        dine_in: 'Customer Order',
         sub_total: 'Sub Total',
         tax: 'Tax 5%',
         total_amount: 'Total Amount',
@@ -1400,6 +1470,10 @@
         orders_badge: 'Orders',
         live_badge: 'Live',
         // Toast Messages
+        toast_title_success: 'Success',
+        toast_title_error: 'Action Denied',
+        toast_title_info: 'Notification',
+        toast_title_warning: 'Warning',
         toast_select_table: 'Please select a table first',
         toast_recalled: 'Order recalled to Draft status.',
         toast_kitchen_waiting: 'Order is waiting in the kitchen queue.',
@@ -1412,6 +1486,28 @@
         toast_order_ready: 'Order is Ready to Serve!',
         toast_add_items: 'Please add items to the cart first.',
         toast_fill_fields: 'Please fill in all required fields.',
+        toast_no_recent_orders: 'No recent orders found for this table to reopen.',
+        toast_order_too_old: 'Last order is too old to safely reopen (> 2 hours).',
+        toast_table_restored: 'Table {id} restored to WAITING PAYMENT.',
+        confirm_reopen: 'Admin Action: Do you want to reopen the last closed order for {id}? Total was ${total}.',
+        toast_admin_only: 'Only Admin or Manager can manage menu items.',
+        toast_enter_name: 'Please enter an item name.',
+        toast_enter_price: 'Please enter a valid price.',
+        toast_select_category: 'Please select a category.',
+        toast_item_updated: 'Item updated successfully!',
+        toast_item_added: 'Item added successfully!',
+        toast_item_deleted: 'Item Deleted',
+        toast_cannot_modify_sent: 'Cannot modify an order that has been sent to the kitchen.',
+        toast_cannot_release_kitchen: 'Cannot release a table after the order has been sent to the kitchen.',
+        toast_no_permission_release: 'You do not have permission to release this table.',
+        toast_table_released: 'Table released successfully.',
+        toast_order_served: 'Order marked as served.',
+        toast_order_fully_paid: 'Order already fully paid. Releasing table...',
+        toast_in_kitchen: 'Order is currently in the kitchen.',
+        toast_remote_release: 'Table was released remotely. Redirecting...',
+        confirm_remove_staff: 'Remove this staff member?',
+        confirm_delete_item: 'Delete this item permanently?',
+        alert_admin_only_delete: 'Only Admins can delete staff.',
         // Release Modal
         release_title: 'Release Table',
         release_confirm_msg: 'Are you sure you want to release this table?',
@@ -1430,6 +1526,7 @@
         btn_seat_guest: 'Seat Guest',
         btn_view_order: 'View Order',
         btn_take_payment: 'Take Payment',
+        btn_release: 'Release',
       },
       so: {
         // Sidebar
@@ -1444,7 +1541,7 @@
         dark_mode: 'Muuqaalka Madow',
         // POS Cart
         current_order: 'Dalabka Hadda',
-        dine_in: 'Gudaha Cun',
+        dine_in: 'Dalabka Macamiilka ',
         sub_total: 'Wadarta Hoose',
         tax: 'Canshuurta 5%',
         total_amount: 'Wadarta Guud',
@@ -1488,7 +1585,7 @@
         admin_revenue: 'Dakhliga Guud',
         admin_orders: 'Dalabka Guud',
         admin_avg: 'Celceliska Dalabka',
-        admin_staff: 'Shaqaalaha Firfircoon',
+        admin_staff: 'Shaqaalaha Jooga',
         admin_chart_title: 'Dakhliga Bilaha ah',
         admin_chart_sub: '7 Maalmood ee la soo Dhaafay',
         admin_days7: '7 Maalmood',
@@ -1501,7 +1598,7 @@
         admin_no_staff: 'Shaqaale lama helin.',
         // Orders View
         orders_title: 'Diiwaanka Dalabka',
-        orders_subtitle: 'La socdo oo maamul dhammaan macaamiladii dhammaaday.',
+        orders_subtitle: 'La soco oo maamul dhammaan macaamiladii dhammaaday.',
         orders_col_details: 'Faahfaahinta Dalabka',
         orders_col_assigned: 'Loo Xilsaaray',
         orders_col_summary: 'Koobaynta Dalabka',
@@ -1515,7 +1612,7 @@
         // Receipt Modal
         receipt_cancel: 'Jooji',
         receipt_pay_print: 'Bixi & Daabac',
-        receipt_close: 'Xir',
+        receipt_close: 'Xidh',
         receipt_print: 'Daabac Rasiidhka',
         // Settings
         settings_title: 'Goobaha',
@@ -1543,7 +1640,7 @@
         notif_order_ready: 'Dalabku Waa Diyaar',
         notif_mark_read: 'Dhammaan Calaamadi in la aqriyay',
         // General
-        close: 'Xir',
+        close: 'Xidh',
         cancel: 'Jooji',
         save: 'Keydi',
         edit: 'Baddel',
@@ -1561,27 +1658,53 @@
         orders_badge: 'Dalabyo',
         live_badge: 'Toos ah',
         // Toast Messages
+        toast_title_success: 'Guul',
+        toast_title_error: 'Loo Diiday',
+        toast_title_info: 'Ogeysiis',
+        toast_title_warning: 'Digniin',
         toast_select_table: 'Fadlan dooro miis marka hore',
         toast_recalled: 'Dalabkii dib baa loo celiyay.',
         toast_kitchen_waiting: 'Dalabku wuxuu ku jiraa safka jikada.',
         toast_sent_kitchen: 'Dalabka jikada ayaa loo diray!',
         toast_paid: 'Lacag bixinta waa guuleysatay!',
-        toast_table_occupied: 'Miiskaan horay baa loo qabtay.',
+        toast_table_occupied: 'Miiskan waxaa Qaatay.',
         toast_staff_added: 'Shaqaalaha waa lagu daray.',
         toast_staff_updated: 'Shaqaalaha waa la cusbooneysiiyay.',
         toast_staff_deleted: 'Shaqaalaha waa la tirtiray.',
         toast_order_ready: 'Dalabku waa diyaar in la adeego!',
         toast_add_items: 'Fadlan alaab ku dar baarkiilka marka hore.',
         toast_fill_fields: 'Fadlan buuxi dhammaan meelaha loo baahan yahay.',
+        toast_no_recent_orders: 'Wax dalab ah oo miiskan hadda lagama helin si loo furo.',
+        toast_order_too_old: 'Dalabkii u dambeeyay aad buu u duugoobay si loo furo (2 saacadood ka badan).',
+        toast_table_restored: 'Miiska {id} waxaa lagu soo celiyay XISAAB SUGID.',
+        confirm_reopen: 'Maamulaha: Ma rabtaa inaad dib u furto dalabkii ugu dambeeyay ee {id}? Wadarta guud waxay ahayd ${total}.',
+        toast_admin_only: 'Kaliya Maamulaha ayaa maamuli kara alaabta menu-ka.',
+        toast_enter_name: 'Fadlan geli magaca alaabta.',
+        toast_enter_price: 'Fadlan geli qiimo sax ah.',
+        toast_select_category: 'Fadlan dooro qayb (category).',
+        toast_item_updated: 'Alaabta waa la cusbooneysiiyay si guul leh!',
+        toast_item_added: 'Alaabta waa lagu daray si guul leh!',
+        toast_item_deleted: 'Alaabta waa la tirtiray.',
+        toast_cannot_modify_sent: 'Ma baddeli kartid dalab loo diray jikada.',
+        toast_cannot_release_kitchen: 'Ma sii deyn kartid miis dalabkiisu jikada ku jiro.',
+        toast_no_permission_release: 'Ma haysatid ogolaansho aad ku sii deyso miiskan.',
+        toast_table_released: 'Miiska si guul leh ayaa loo sii daayay.',
+        toast_order_served: 'Dalabka waxaa lagu calaamadeeyay in la adeegay.',
+        toast_order_fully_paid: 'Dalabka waa la wada bixiyay. Miiska waa la sii deynayaa...',
+        toast_in_kitchen: 'Dalabka hadda jikada ayuu ku jiraa.',
+        toast_remote_release: 'Miiska meel fog ayaa laga sii daayay. Dib ayaa laguugu celinayaa...',
+        confirm_remove_staff: 'Ma hubtaa inaad tirtirto shaqaalahan?',
+        confirm_delete_item: 'Ma hubtaa inaad alaabtan tirtirto weligeed?',
+        alert_admin_only_delete: 'Kaliya Maamulayaasha ayaa tirtiri kara shaqaalaha.',
         // Release Modal
-        release_title: 'Xir Miiska',
-        release_confirm_msg: 'Ma hubtaa inaad rabto inaad xirto miiskan?',
+        release_title: 'Siidaa miiskan',
+        release_confirm_msg: 'Ma hubtaa  inaad Siidayso miiskan?',
         release_confirm_sub: 'Dalabkani Hawada Ayuu Kabaxayaa .',
         release_keep: 'Sii Hay Miiska',
-        release_yes: 'Haa, Xir',
+        release_yes: 'Haa, Siidaa',
         // Table card buttons Labels
         status_available: 'Banaan',
-        status_occupied: 'La Qabtay',
+        status_occupied: 'La Qaatay',
         status_sending: 'Waa la dirayaa...',
         status_sent: 'Loo Diray Jikada',
         status_preparing: 'Diyaarinta',
@@ -1591,6 +1714,7 @@
         btn_seat_guest: 'Fadhiisi Martida',
         btn_view_order: 'Fiiri Dalabka',
         btn_take_payment: 'Qaado Lacagta',
+        btn_release: 'Siidaa Miiska',
       }
     };
 
@@ -1676,13 +1800,28 @@
     let selectedPayment = 'Cash';
 
     // --- DATA ---
-    const categories = [
-      { id: 'all', name: 'All', count: 235, icon: 'fa-table-cells-large' },
-      { id: 'breakfast', name: 'Breakfast', count: 19, icon: 'fa-egg' },
-      { id: 'soups', name: 'Soups', count: 6, icon: 'fa-mug-hot' },
-      { id: 'pasta', name: 'Pasta', count: 14, icon: 'fa-utensils' },
-      { id: 'main', name: 'Main Course', count: 67, icon: 'fa-bowl-food' },
-      { id: 'burger', name: 'Burgers', count: 13, icon: 'fa-burger' },
+    /* 
+       RECOMMENDED ICONS FOR FUTURE CATEGORIES:
+       - Pizza: fa-pizza-slice
+       - Grill: fa-drumstick-bite
+       - Drinks: fa-glass-water, fa-coffee, fa-bottle-water, fa-wine-glass
+       - Dessert: fa-ice-cream, fa-cookie, fa-cake-candles
+       - Seafood: fa-fish, fa-shrimp
+       - Healthy: fa-carrot, fa-apple-whole, fa-seedling
+       - Ethnic: fa-bowl-rice, fa-pepper-hot
+       - Bakery: fa-bread-slice, fa-croissant
+    */
+    let categories = JSON.parse(localStorage.getItem('pos_categories')) || [
+      { id: 'all', name: 'All', count: 0, icon: 'fa-table-cells-large' },
+      { id: 'breakfast', name: 'Breakfast', count: 0, icon: 'fa-egg' },
+      { id: 'soups', name: 'Soups', count: 0, icon: 'fa-mug-hot' },
+      { id: 'pasta', name: 'Pasta', count: 0, icon: 'fa-utensils' },
+      { id: 'main', name: 'Main Course', count: 0, icon: 'fa-bowl-food' },
+      { id: 'burger', name: 'Burgers', count: 0, icon: 'fa-burger' },
+      { id: 'pizza', name: 'Pizza', count: 0, icon: 'fa-pizza-slice' },
+      { id: 'desserts', name: 'Desserts', count: 0, icon: 'fa-ice-cream' },
+      { id: 'drinks', name: 'Drinks', count: 0, icon: 'fa-glass-water' },
+      { id: 'seafood', name: 'Seafood', count: 0, icon: 'fa-fish' },
     ];
 
     let products = [
@@ -2274,8 +2413,8 @@
     }
 
     function deleteStaff(id) {
-      if (currentUser.role !== 'Admin') return alert('Only Admins can delete staff.');
-      if (confirm('Remove this staff member?')) {
+      if (currentUser.role !== 'Admin') return alert(t('alert_admin_only_delete'));
+      if (confirm(t('confirm_remove_staff'))) {
         staffList = staffList.filter(s => s.id !== id);
         renderStaffTable();
       }
@@ -2361,7 +2500,7 @@
     function saveProduct() {
       // Only Admin and Manager can add/edit items
       if (!currentUser || !['Admin', 'Manager'].includes(currentUser.role)) {
-        showToast('Only Admin or Manager can manage menu items.', 'error');
+        showToast(t('toast_admin_only'), 'error');
         return;
       }
 
@@ -2372,15 +2511,15 @@
         'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=400';
 
       if (!name) {
-        showToast('Please enter an item name.', 'error');
+        showToast(t('toast_enter_name'), 'error');
         return;
       }
       if (isNaN(price) || price <= 0) {
-        showToast('Please enter a valid price.', 'error');
+        showToast(t('toast_enter_price'), 'error');
         return;
       }
       if (!category) {
-        showToast('Please select a category.', 'error');
+        showToast(t('toast_select_category'), 'error');
         return;
       }
 
@@ -2389,11 +2528,11 @@
         if (index !== -1) {
           products[index] = { ...products[index], name, price, category, image };
         }
-        showToast('Item updated successfully!', 'success');
+        showToast(t('toast_item_updated'), 'success');
       } else {
         const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
         products.push({ id: newId, name, price, category, image });
-        showToast('Item added successfully!', 'success');
+        showToast(t('toast_item_added'), 'success');
       }
 
       saveData();
@@ -2403,11 +2542,142 @@
     }
 
     function deleteProduct(id) {
-      if (confirm('Delete this item permanently?')) {
+      if (!currentUser || !['Admin', 'Manager'].includes(currentUser.role)) {
+        showToast(t('toast_admin_only'), 'error');
+        return;
+      }
+      if (confirm(t('confirm_delete_item'))) {
         products = products.filter(p => p.id !== id);
         renderMenu();
-        showToast("Item Deleted", "success");
+        showToast(t('toast_item_deleted'), "success");
       }
+    }
+
+    // --- CATEGORY MANAGEMENT ---
+    let editingCategoryId = null;
+
+    function openCategoryModal(id = null) {
+      if (!currentUser || currentUser.role !== 'Admin') return;
+      editingCategoryId = id;
+      const modal = document.getElementById('add-category-modal');
+      const content = document.getElementById('add-category-content');
+      const title = document.getElementById('category-modal-title');
+      const btn = document.getElementById('category-modal-btn');
+      const nameIn = document.getElementById('category-name');
+      const iconIn = document.getElementById('category-icon');
+      const preview = document.getElementById('category-icon-preview');
+
+      renderIconPicker();
+
+      if (id) {
+        const cat = categories.find(c => c.id === id);
+        title.innerText = 'Edit Category';
+        btn.querySelector('span').innerText = 'Update Category';
+        nameIn.value = cat.name;
+        iconIn.value = cat.icon;
+        preview.className = `fa-solid ${cat.icon}`;
+      } else {
+        title.innerText = 'Add New Category';
+        btn.querySelector('span').innerText = 'Save Category';
+        nameIn.value = '';
+        iconIn.value = 'fa-tag';
+        preview.className = 'fa-solid fa-tag';
+      }
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    const RECOMMENDED_ICONS = [
+      'fa-tag', 'fa-pizza-slice', 'fa-drumstick-bite', 'fa-glass-water', 'fa-coffee',
+      'fa-bottle-water', 'fa-wine-glass', 'fa-ice-cream', 'fa-cookie', 'fa-cake-candles',
+      'fa-fish', 'fa-shrimp', 'fa-carrot', 'fa-apple-whole', 'fa-seedling', 'fa-bowl-rice',
+      'fa-pepper-hot', 'fa-bread-slice', 'fa-croissant', 'fa-burger', 'fa-utensils',
+      'fa-mug-hot', 'fa-egg', 'fa-cheese', 'fa-bacon', 'fa-hotdog', 'fa-lemon', 'fa-candy-cane'
+    ];
+
+    function renderIconPicker() {
+      const grid = document.getElementById('icon-picker-grid');
+      const iconIn = document.getElementById('category-icon');
+      if (!grid) return;
+
+      grid.innerHTML = RECOMMENDED_ICONS.map(icon => `
+        <button onclick="selectPickerIcon('${icon}')" 
+                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 text-gray-400 hover:bg-primary/10 hover:text-primary transition-all border border-transparent hover:border-primary/20">
+          <i class="fa-solid ${icon}"></i>
+        </button>
+      `).join('');
+    }
+
+    function selectPickerIcon(icon) {
+      const iconIn = document.getElementById('category-icon');
+      const preview = document.getElementById('category-icon-preview');
+      iconIn.value = icon;
+      preview.className = `fa-solid ${icon}`;
+    }
+
+    function closeCategoryModal() {
+      const modal = document.getElementById('add-category-modal');
+      const content = document.getElementById('add-category-content');
+      content.classList.remove('scale-100', 'opacity-100');
+      content.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => { modal.classList.add('hidden'); editingCategoryId = null; }, 200);
+    }
+
+    function saveCategory() {
+      if (!currentUser || currentUser.role !== 'Admin') return;
+      const name = document.getElementById('category-name').value.trim();
+      const icon = document.getElementById('category-icon').value.trim() || 'fa-tag';
+
+      if (!name) {
+        showToast('Please enter category name', 'error');
+        return;
+      }
+
+      if (editingCategoryId) {
+        const index = categories.findIndex(c => c.id === editingCategoryId);
+        if (index !== -1) {
+          categories[index].name = name;
+          categories[index].icon = icon;
+        }
+      } else {
+        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        // Prevent duplicate IDs
+        if (categories.find(c => c.id === id)) {
+          showToast('Category ID already exists (derived from name)', 'error');
+          return;
+        }
+        categories.push({ id, name, icon, count: 0 });
+      }
+
+      localStorage.setItem('pos_categories', JSON.stringify(categories));
+      renderCategories();
+      closeCategoryModal();
+      showToast('Category saved successfully', 'success');
+    }
+
+    function deleteCategory(id) {
+      if (!currentUser || currentUser.role !== 'Admin') return;
+      if (id === 'all') return;
+
+      const hasProducts = products.some(p => p.category === id);
+      if (hasProducts) {
+        if (!confirm('This category has items. Deleting it will leave items without a category. Proceed?')) return;
+      } else {
+        if (!confirm('Are you sure you want to delete this category?')) return;
+      }
+
+      categories = categories.filter(c => c.id !== id);
+      localStorage.setItem('pos_categories', JSON.stringify(categories));
+
+      if (activeCategory === id) activeCategory = 'all';
+
+      renderCategories();
+      renderMenu();
+      showToast('Category deleted', 'success');
     }
 
     // --- WORKFLOW: TABLE LOGIC ---
@@ -2788,18 +3058,46 @@
     function renderCategories() {
       const container = document.getElementById('category-container');
       if (!container) return;
-      container.innerHTML = categories.map(cat => `
+
+      const isAdmin = currentUser && currentUser.role === 'Admin';
+
+      let html = categories.map(cat => {
+        const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
+        return `
                 <div onclick="setCategory('${cat.id}')" 
-                     class="cursor-pointer min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-start gap-3 md:gap-4 ${activeCategory === cat.id ? 'bg-primary/10 border-primary shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}">
+                     class="cursor-pointer min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-start gap-3 md:gap-4 relative group ${activeCategory === cat.id ? 'bg-primary/10 border-primary shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}">
+                    
+                    ${isAdmin && cat.id !== 'all' ? `
+                    <div class="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="event.stopPropagation(); openCategoryModal('${cat.id}')" class="w-6 h-6 rounded-full bg-white text-blue-500 shadow-md hover:bg-blue-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="event.stopPropagation(); deleteCategory('${cat.id}')" class="w-6 h-6 rounded-full bg-white text-red-500 shadow-md hover:bg-red-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    ` : ''}
+
                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-base md:text-lg ${activeCategory === cat.id ? 'bg-primary text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}">
                         <i class="fa-solid ${cat.icon}"></i>
                     </div>
                     <div>
                         <h3 class="font-bold text-sm md:text-base text-gray-800 dark:text-white ${activeCategory === cat.id ? 'text-primary-dark' : ''}">${cat.name}</h3>
-                        <p class="text-xs text-gray-400 dark:text-gray-300">${cat.count} items</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-300">${count} items</p>
                     </div>
                 </div>
-            `).join('');
+            `;
+      }).join('');
+
+      if (isAdmin) {
+        html += `
+                <div onclick="openCategoryModal()" 
+                     class="cursor-pointer min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-primary transition-all flex flex-col items-center justify-center gap-2 group">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <span class="text-xs font-bold text-gray-400 group-hover:text-primary transition-colors">Add Category</span>
+                </div>
+            `;
+      }
+
+      container.innerHTML = html;
     }
 
     function setCategory(id) {
@@ -2853,7 +3151,7 @@
       if (!activeTable) return;
 
       if (!canEditOrder(activeTable)) {
-        showToast("Cannot modify an order that has been sent to the kitchen.", "warning");
+        showToast(t('toast_cannot_modify_sent'), "warning");
         return;
       }
 
@@ -2868,7 +3166,7 @@
     function updateQty(id, delta) {
       const activeTable = tables.find(t => t.id === activeTableId);
       if (!canEditOrder(activeTable)) {
-        showToast("Cannot modify an order that has been sent to the kitchen.", "warning");
+        showToast(t('toast_cannot_modify_sent'), "warning");
         return;
       }
 
@@ -2967,14 +3265,14 @@
 
       // Frontend guard: status check
       if (activeTable.status !== STATUS.OCCUPIED) {
-        showToast('Cannot release a table after the order has been sent to the kitchen.', 'error');
+        showToast(t('toast_cannot_release_kitchen'), 'error');
         return;
       }
 
       // Frontend guard: permission check
       const isAuthorized = activeTable.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role);
       if (!isAuthorized) {
-        showToast('You do not have permission to release this table.', 'error');
+        showToast(t('toast_no_permission_release'), 'error');
         return;
       }
 
@@ -3010,13 +3308,13 @@
       // Backend-equivalent validation (re-validated server-side in memory)
       if (activeTable.status !== STATUS.OCCUPIED) {
         closeReleaseModal();
-        showToast('Cannot release a table after the order has been sent to the kitchen.', 'error');
+        showToast(t('toast_cannot_release_kitchen'), 'error');
         return;
       }
       const isAuthorized = activeTable.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role);
       if (!isAuthorized) {
         closeReleaseModal();
-        showToast('You do not have permission to release this table.', 'error');
+        showToast(t('toast_no_permission_release'), 'error');
         return;
       }
 
@@ -3046,7 +3344,7 @@
         setTimeout(() => {
           renderTables();
           switchView('tables');
-          showToast('Table released successfully.', 'success');
+          showToast(t('toast_table_released'), 'success');
         }, 220);
       }
     }
@@ -3170,7 +3468,7 @@
         case STATUS.READY:
           activeTable.status = STATUS.SERVED;
           activeTable.timestamps.served = new Date();
-          showToast("Order marked as served.", "success");
+          showToast(t('toast_order_served'), "success");
           saveData();
           break;
 
@@ -3183,7 +3481,7 @@
           const remaining = totalAmount - alreadyPaid;
 
           if (remaining <= 0) {
-            showToast("Order already fully paid. Releasing table...", "info");
+            showToast(t('toast_order_fully_paid'), "info");
             releaseTableAndLog(activeTable, totalAmount);
             return;
           }
@@ -3193,7 +3491,7 @@
 
         case STATUS.SENT:
         case STATUS.PREPARING:
-          showToast("Order is currently in the kitchen.", "info");
+          showToast(t('toast_in_kitchen'), "info");
           break;
       }
 
@@ -3310,7 +3608,7 @@
 
       const recentOrderIndex = orderHistory.map(o => o.tableId).lastIndexOf(tableId);
       if (recentOrderIndex === -1) {
-        showToast("No recent orders found for this table to reopen.", "warning");
+        showToast(t('toast_no_recent_orders'), "warning");
         return;
       }
 
@@ -3318,11 +3616,12 @@
       // Check if it was closed within the last 2 hours to prevent crazy restoring
       const closeTime = orderToRestore.timestamps.paid ? new Date(orderToRestore.timestamps.paid).getTime() : 0;
       if (Date.now() - closeTime > (2 * 60 * 60 * 1000)) {
-        showToast("Last order is too old to safely reopen (> 2 hours).", "error");
+        showToast(t('toast_order_too_old'), "error");
         return;
       }
 
-      if (confirm(`Admin Action: Do you want to reopen the last closed order for ${tableId}? Total was $${orderToRestore.total.toFixed(2)}.`)) {
+      const confirmMsg = t('confirm_reopen').replace('{id}', tableId).replace('{total}', orderToRestore.total.toFixed(2));
+      if (confirm(confirmMsg)) {
         const table = tables.find(t => t.id === tableId);
 
         // Log the structural override
@@ -3345,7 +3644,7 @@
         // Remove from history so it doesn't double-count later
         orderHistory.splice(recentOrderIndex, 1);
 
-        showToast(`Table ${tableId} restored to WAITING PAYMENT.`, "success");
+        showToast(t('toast_table_restored').replace('{id}', tableId), "success");
         saveData();
         renderTablesView(); // Refresh visual
         openTable(tableId); // Focus it
@@ -3500,16 +3799,16 @@
 
       if (type === 'success') {
         icon.className = 'fa-solid fa-circle-check text-primary text-xl flex-shrink-0';
-        title.innerText = 'Success';
+        title.innerText = t('toast_title_success');
       } else if (type === 'error') {
         icon.className = 'fa-solid fa-circle-exclamation text-red-500 text-xl flex-shrink-0';
-        title.innerText = 'Action Denied';
+        title.innerText = t('toast_title_error');
       } else if (type === 'info') {
         icon.className = 'fa-solid fa-bell text-blue-500 text-xl flex-shrink-0';
-        title.innerText = 'Notification';
+        title.innerText = t('toast_title_info');
       } else if (type === 'warning') {
         icon.className = 'fa-solid fa-triangle-exclamation text-orange-500 text-xl flex-shrink-0';
-        title.innerText = 'Warning';
+        title.innerText = t('toast_title_warning');
       }
 
       // Cancel any existing timer then show
@@ -3549,7 +3848,7 @@
             if (newT && newT.status === STATUS.AVAILABLE) {
               // Table was released
               if (currentUser && currentUser.id === oldT.lockedBy) {
-                showToast('Table was released remotely. Redirecting...', 'info');
+                showToast(t('toast_remote_release'), 'info');
                 handleTableReleaseRedirect();
               } else if (!currentUser) {
                 const lastUserId = localStorage.getItem('lastLoggedInUserId');
