@@ -320,16 +320,16 @@
             </button>
 
             <div
-              class="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-sm flex items-center px-4 py-3 transition-colors duration-300 mr-2 lg:mr-4">
-              <i class="fa-solid fa-search text-gray-400 mr-3"></i>
-              <input type="text" id="search-input" placeholder="Search Product..."
-                class="flex-1 bg-transparent focus:outline-none text-sm font-medium text-gray-700 dark:text-gray-200 placeholder-gray-400 w-full min-w-0">
+              class="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-sm flex items-center px-3 py-2.5 md:px-4 md:py-3 transition-colors duration-300 mr-1.5 md:mr-4">
+              <i class="fa-solid fa-search text-gray-400 mr-2 md:mr-3 text-sm"></i>
+              <input type="text" id="search-input" placeholder="Search Product..." oninput="renderMenu()"
+                class="flex-1 bg-transparent focus:outline-none text-xs md:text-sm font-medium text-gray-700 dark:text-gray-200 placeholder-gray-400 w-full min-w-0">
             </div>
 
             <!-- Admin Add Product Button -->
             <div class="flex gap-2 flex-shrink-0">
               <button id="add-product-btn" onclick="openAddProductModal()"
-                class="hidden w-12 h-12 bg-primary text-white rounded-2xl shadow-sm flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/30">
+                class="hidden w-11 h-11 md:w-12 md:h-12 bg-primary text-white rounded-2xl shadow-sm flex items-center justify-center hover:bg-primary-dark transition-colors shadow-lg shadow-primary/30">
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
@@ -3065,7 +3065,7 @@
         const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
         return `
                 <div onclick="setCategory('${cat.id}')" 
-                     class="cursor-pointer min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-start gap-3 md:gap-4 relative group ${activeCategory === cat.id ? 'bg-primary/10 border-primary shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}">
+                     class="cursor-pointer min-w-[100px] md:min-w-[140px] p-2.5 md:p-4 rounded-3xl border transition-all flex flex-col items-start gap-2.5 md:gap-4 relative group ${activeCategory === cat.id ? 'bg-primary/10 border-primary shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}">
                     
                     ${isAdmin && cat.id !== 'all' ? `
                     <div class="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -3074,12 +3074,12 @@
                     </div>
                     ` : ''}
 
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-base md:text-lg ${activeCategory === cat.id ? 'bg-primary text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-lg ${activeCategory === cat.id ? 'bg-primary text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}">
                         <i class="fa-solid ${cat.icon}"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm md:text-base text-gray-800 dark:text-white ${activeCategory === cat.id ? 'text-primary-dark' : ''}">${cat.name}</h3>
-                        <p class="text-xs text-gray-400 dark:text-gray-300">${count} items</p>
+                        <h3 class="font-bold text-xs md:text-base text-gray-800 dark:text-white ${activeCategory === cat.id ? 'text-primary-dark' : ''}">${cat.name}</h3>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-300">${count} items</p>
                     </div>
                 </div>
             `;
@@ -3109,7 +3109,15 @@
     function renderMenu() {
       const container = document.getElementById('menu-container');
       if (!container) return;
-      const filtered = products.filter(p => activeCategory === 'all' || p.category === activeCategory);
+
+      const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+
+      const filtered = products.filter(p => {
+        const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm);
+        return matchesCategory && matchesSearch;
+      });
+
       const activeTable = tables.find(t => t.id === activeTableId);
       const isAdmin = currentUser && currentUser.role === 'Admin';
       const canModify = activeTable && canEditOrder(activeTable);
