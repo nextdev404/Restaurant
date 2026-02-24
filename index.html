@@ -200,7 +200,7 @@
           <!-- PIN Input -->
           <div class="relative">
             <i class="fa-solid fa-lock absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input type="password" id="login-pin" placeholder="Enter PIN (1234)"
+            <input type="password" id="login-pin" placeholder="Your Pin"
               class="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary transition-all font-mono text-lg tracking-widest text-center shadow-inner text-gray-800">
           </div>
 
@@ -223,7 +223,7 @@
 
     <!-- SIDEBAR -->
     <aside id="main-sidebar"
-      class="sidebar-mobile-hidden lg:sidebar-mobile-visible fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 flex flex-col py-6 px-4 lg:m-4 rounded-r-[2rem] lg:rounded-[2rem] shadow-2xl lg:shadow-sm flex-shrink-0 transition-transform duration-300 ease-in-out lg:static lg:transform-none">
+      class="sidebar-mobile-hidden lg:sidebar-mobile-visible fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-gray-800 flex flex-col py-6 px-4 lg:m-4 rounded-r-[2rem] lg:rounded-[2rem] shadow-2xl lg:shadow-sm flex-shrink-0 transition-transform duration-300 ease-in-out lg:static lg:transform-none">
       <!-- Logo -->
       <div class="flex items-center gap-3 px-4 mb-10">
         <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary text-xl shadow-sm">
@@ -358,10 +358,18 @@
           <div
             class="sticky top-0 z-20 lg:hidden p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-white/95 backdrop-blur-sm dark:bg-gray-800/95">
             <h2 class="text-xl font-bold text-gray-800 dark:text-white" data-i18n="current_order">Current Order</h2>
-            <button onclick="toggleMobileCart()"
-              class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500">
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
+            <div class="flex items-center gap-2">
+              <button id="release-table-btn-mobile" onclick="requestReleaseTable()"
+                class="hidden items-center gap-2 px-3 py-2 rounded-xl border-2 border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-500 hover:border-red-500 hover:text-white dark:hover:bg-red-600 dark:hover:border-red-600 transition-all text-xs font-bold shadow-sm active:scale-95"
+                title="Release this table">
+                <i class="fa-solid fa-door-open text-sm"></i>
+                <span data-i18n="btn_release">Release</span>
+              </button>
+              <button onclick="toggleMobileCart()"
+                class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Header -->
@@ -1279,15 +1287,18 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('main-sidebar');
       const overlay = document.getElementById('sidebar-overlay');
+      const mobileCartBtn = document.getElementById('mobile-cart-btn');
 
       if (sidebar.classList.contains('sidebar-mobile-hidden')) {
         sidebar.classList.remove('sidebar-mobile-hidden');
         sidebar.classList.add('sidebar-mobile-visible');
         overlay.classList.remove('hidden');
+        if (mobileCartBtn) mobileCartBtn.classList.add('hidden');
       } else {
         sidebar.classList.add('sidebar-mobile-hidden');
         sidebar.classList.remove('sidebar-mobile-visible');
         overlay.classList.add('hidden');
+        if (mobileCartBtn) mobileCartBtn.classList.remove('hidden');
       }
     }
 
@@ -2687,17 +2698,25 @@
 
     function updateReleaseBtnVisibility(table) {
       const btn = document.getElementById('release-table-btn');
-      if (!btn) return;
+      const mobileBtn = document.getElementById('release-table-btn-mobile');
+
       const canRelease = table &&
         table.status === STATUS.OCCUPIED &&
         (table.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role));
-      if (canRelease) {
-        btn.classList.remove('hidden');
-        btn.classList.add('flex');
-      } else {
-        btn.classList.add('hidden');
-        btn.classList.remove('flex');
-      }
+
+      const updateBtn = (target) => {
+        if (!target) return;
+        if (canRelease) {
+          target.classList.remove('hidden');
+          target.classList.add('flex');
+        } else {
+          target.classList.add('hidden');
+          target.classList.remove('flex');
+        }
+      };
+
+      updateBtn(btn);
+      updateBtn(mobileBtn);
     }
 
     function getStatusStyles(status) {
