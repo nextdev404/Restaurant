@@ -3,6 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hudheel-Bile </title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -110,6 +113,7 @@
   class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 h-screen w-screen overflow-hidden selection:bg-primary-light selection:text-primary-dark transition-colors duration-300">
 
   <!-- LOGIN SCREEN (Overlay) -->
+  <!-- LOGIN SCREEN (Overlay) -->
   <div id="login-screen" class="fixed inset-0 z-50 bg-gray-50 flex items-center justify-center p-4">
     <div
       class="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-slide-up max-h-screen md:h-[600px] overflow-y-auto md:overflow-hidden">
@@ -137,50 +141,55 @@
         <div class="space-y-4 md:space-y-6">
           <!-- Role Selection -->
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-            <button onclick="selectLoginRole('Admin')"
+            <button type="button"
               class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
               data-role="Admin">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base">
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
                 <i class="fa-solid fa-user-tie"></i>
               </div>
-              <span class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark">Admin</span>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Admin</span>
             </button>
-            <button onclick="selectLoginRole('Waiter')"
+            <button type="button"
               class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
               data-role="Waiter">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base">
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
                 <i class="fa-solid fa-bell-concierge"></i>
               </div>
-              <span class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark">Waiter</span>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Waiter</span>
             </button>
-            <button onclick="selectLoginRole('Chef')"
+            <button type="button"
               class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
               data-role="Chef">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base">
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
                 <i class="fa-solid fa-fire-burner"></i>
               </div>
-              <span class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark">Chef</span>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Chef</span>
             </button>
-            <button onclick="selectLoginRole('Manager')"
+            <button type="button"
               class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
               data-role="Manager">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base">
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
                 <i class="fa-solid fa-briefcase"></i>
               </div>
-              <span class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark">Manager</span>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Manager</span>
             </button>
-            <button onclick="selectLoginRole('Cashier')"
+            <button type="button"
               class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
               data-role="Cashier">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base">
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
                 <i class="fa-solid fa-cash-register"></i>
               </div>
-              <span class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark">Cashier</span>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Cashier</span>
             </button>
           </div>
 
@@ -902,15 +911,18 @@
 
   <!-- RECEIPT MODAL -->
   <div id="receipt-modal"
-    class="hidden fixed inset-0 bg-black/60 z-50 flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+    class="hidden fixed inset-0 bg-black/60 z-[70] flex flex-col items-center justify-center p-4 backdrop-blur-sm">
     <div
       class="bg-white rounded-lg shadow-2xl relative flex flex-col max-h-[90vh] w-full max-w-sm overflow-hidden animate-slide-up">
 
       <!-- Receipt Content -->
       <div id="printable-receipt" class="p-6 overflow-y-auto bg-white text-black font-mono text-sm">
-        <div class="text-center mb-4">
-          <h2 class="text-2xl font-bold uppercase tracking-wider mb-1">Hudheel Bile</h2>
-          <p class="text-gray-500 text-xs">Tuwali</p>
+        <div class="text-center mb-6">
+          <div class="text-black text-3xl mx-auto mb-3">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <h2 class="text-2xl font-black uppercase tracking-widest mb-1 text-gray-900">Hudheel Bile</h2>
+          <p class="text-gray-500 text-xs font-semibold">Tuwali</p>
           <p class="text-gray-500 text-xs">Tel: +252 63 4308432</p>
           <div class="mt-4 border-b border-dashed border-gray-400 pb-4 flex justify-between text-xs">
             <span id="receipt-date"></span>
@@ -1037,7 +1049,7 @@
             </div>
             <h2 class="text-2xl font-extrabold text-white" id="modal-title" data-i18n="modal_add_staff">Add New Staff
             </h2>
-            <p class="text-white/70 text-sm mt-1">Fill in the details below</p>
+            <p class="text-white/70 text-sm mt-1" data-i18n="modal_fill_details">Fill in the details below</p>
           </div>
           <button onclick="closeAddStaffModal()"
             class="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center text-white transition-colors">
@@ -1059,7 +1071,7 @@
         </div>
 
         <!-- Role -->
-        <div>
+        <div id="new-staff-role-container">
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"
             data-i18n="modal_role">Role</label>
           <div class="relative">
@@ -1336,6 +1348,10 @@
       }
     }
 
+    // --- GLOBAL STATE ---
+    let currentUser = null;
+    let selectedRole = null;
+
     // --- STAFF DATA ---
     let staffList = [
       { id: 1, name: 'Admin User', role: 'Admin', status: 'Active', pin: '1234', avatar: 'Admin' },
@@ -1400,6 +1416,8 @@
         kitchen_new_badge: 'New Order',
         kitchen_start: 'Start Preparing',
         kitchen_mark_ready: 'Mark Ready',
+        ready_to_serve: 'Ready to Serve',
+
         kitchen_all_done: 'All orders completed',
         // Admin Dashboard
         admin_title: 'Admin Dashboard',
@@ -1453,6 +1471,8 @@
         // Add Staff Modal
         modal_add_staff: 'Add New Staff',
         modal_edit_staff: 'Edit Staff',
+        modal_fill_details: 'Fill in the details below',
+
         modal_full_name: 'Full Name',
         modal_role: 'Role',
         modal_pin: 'PIN',
@@ -1587,6 +1607,8 @@
         kitchen_new_badge: 'Dalab Cusub',
         kitchen_start: 'Bilow Diyaarinta',
         kitchen_mark_ready: 'Diyaar',
+        ready_to_serve: 'Waa diyaar Cuntadu',
+
         kitchen_all_done: 'Dhammaan dalabyadu way dhammaadeen',
         // Admin Dashboard
         admin_title: 'Bogga Maamulka',
@@ -1640,6 +1662,8 @@
         // Add Staff Modal
         modal_add_staff: 'Kudar Shaqaale Cusub',
         modal_edit_staff: 'Beddel Shaqaalaha',
+        modal_fill_details: 'Buuxi foomka hoose',
+
         modal_full_name: 'Magaca Buuxa',
         modal_role: 'Doorka',
         modal_pin: 'Lambarka Sirta',
@@ -1780,6 +1804,7 @@
       if (typeof renderAdmin === 'function' && !document.getElementById('view-admin').classList.contains('hidden')) renderAdmin();
       if (typeof renderKitchen === 'function' && !document.getElementById('view-kitchen').classList.contains('hidden')) renderKitchen();
       if (typeof renderTablesView === 'function') renderTablesView();
+      if (typeof updateMainActionButton === 'function') updateMainActionButton();
       // Always re-render staff table so Active/Inactive labels update on language change
       if (typeof renderStaffTable === 'function' && document.getElementById('staff-table-body')) renderStaffTable();
     }
@@ -1897,8 +1922,40 @@
     loadData();
 
     // --- LOGIN FUNCTIONS ---
+    // Attach event listeners defensively once DOM is parsed
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const role = btn.getAttribute('data-role');
+          console.log('Role clicked via EventListener:', role);
+          if (role) selectLoginRole(role);
+        });
+      });
+    });
+
     function selectLoginRole(role) {
+      console.log('selectLoginRole executed for:', role);
       selectedRole = role;
+
+      const userSelect = document.getElementById('login-user-select');
+      const userContainer = document.getElementById('user-selection-container');
+
+      // Filter staff by role
+      const filteredStaff = staffList.filter(u => u.role.toLowerCase() === role.toLowerCase());
+
+      // Populate dropdown
+      userSelect.innerHTML = '<option value="" disabled selected>Choose your account</option>';
+      filteredStaff.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.name;
+        userSelect.appendChild(opt);
+      });
+
+      // Show container
+      userContainer.classList.remove('hidden');
+
       document.querySelectorAll('.role-btn').forEach(btn => {
         const isActive = btn.dataset.role === role;
         btn.className = isActive
@@ -1906,33 +1963,35 @@
           : 'role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer';
         const iconDiv = btn.querySelector('div');
         iconDiv.className = isActive
-          ? 'w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary text-white shadow-sm flex items-center justify-center transition-colors text-sm md:text-base'
-          : 'w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base';
+          ? 'w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary text-white shadow-sm flex items-center justify-center transition-colors text-sm md:text-base pointer-events-none'
+          : 'w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none';
         btn.querySelector('span').className = isActive
-          ? 'text-xs md:text-sm font-bold text-primary-dark'
-          : 'text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark';
+          ? 'text-xs md:text-sm font-bold text-primary-dark pointer-events-none'
+          : 'text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none';
       });
 
-      const userSelect = document.getElementById('login-user-select');
-      const userContainer = document.getElementById('user-selection-container');
-      const usersForRole = staffList.filter(u => u.role.toLowerCase() === role.toLowerCase());
-      userSelect.innerHTML = usersForRole.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
-
-      if (usersForRole.length > 0) userContainer.classList.remove('hidden');
-      else userContainer.classList.add('hidden');
+      // Focus PIN after a small delay to allow animation/DOM updates
+      setTimeout(() => {
+        const pinInput = document.getElementById('login-pin');
+        if (pinInput) pinInput.focus();
+      }, 100);
     }
 
     function handleLogin() {
+      const userId = document.getElementById('login-user-select').value;
       const pin = document.getElementById('login-pin').value;
-      const userSelect = document.getElementById('login-user-select');
 
-      if (!selectedRole) return alert('Select a role');
+      if (!selectedRole) return alert('Select a role first.');
+      if (!userId) return alert('Please select your user account.');
+      if (!pin) return alert('Enter your PIN.');
 
-      let userToLogin = null;
-      const userId = parseInt(userSelect.value);
+      // Find user by ID
+      const userToLogin = staffList.find(u => u.id == userId);
 
-      if (userId) userToLogin = staffList.find(u => u.id === userId);
-      if (!userToLogin) return alert("No user selected.");
+      if (!userToLogin || userToLogin.pin !== pin) {
+        alert("Invalid PIN.");
+        return;
+      }
 
       if (userToLogin.pin === pin) {
         currentUser = userToLogin;
@@ -2017,7 +2076,7 @@
         items.push({ id: 'kitchen', label: t('nav_kitchen'), icon: 'fa-fire-burner' });
       }
 
-      if (['Admin', 'Manager', 'Cashier'].includes(role)) {
+      if (['Admin', 'Manager', 'Cashier', 'Waiter'].includes(role)) {
         items.push({ id: 'orders', label: t('nav_orders'), icon: 'fa-clipboard-list' });
       }
 
@@ -2326,6 +2385,9 @@
         if (staff.role === 'Admin') badgeColor = 'bg-red-100 text-red-600';
 
         const canModify = currentUser.role === 'Admin' && staff.role !== 'Admin';
+        const isSelfAdmin = currentUser.role === 'Admin' && staff.id === currentUser.id;
+        const canEdit = canModify || isSelfAdmin;
+        const canDelete = canModify;
 
         return `
                 <tr class="border-b border-gray-100 dark:border-gray-600 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -2339,10 +2401,10 @@
                         </span>
                     </td>
                     <td class="px-4 py-3 text-right">
-                        ${canModify ? `
+                        ${canEdit ? `
                         <div class="flex justify-end gap-2">
                             <button onclick="openAddStaffModal(${staff.id})" class="text-gray-400 hover:text-blue-500 transition-colors w-8 h-8 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteStaff(${staff.id})" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                            ${canDelete ? `<button onclick="deleteStaff(${staff.id})" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>` : ''}
                         </div>` : ''}
                     </td>
                 </tr>
@@ -2361,6 +2423,8 @@
       const roleInput = document.getElementById('new-staff-role');
       const pinInput = document.getElementById('new-staff-pin');
 
+      const roleContainer = document.getElementById('new-staff-role-container');
+
       if (id) {
         const staff = staffList.find(s => s.id === id);
         title.innerText = t('modal_edit_staff');
@@ -2368,12 +2432,19 @@
         nameInput.value = staff.name;
         roleInput.value = staff.role;
         pinInput.value = staff.pin;
+
+        if (staff.role === 'Admin') {
+          roleContainer.classList.add('hidden');
+        } else {
+          roleContainer.classList.remove('hidden');
+        }
       } else {
         title.innerText = t('modal_add_staff');
         btn.innerText = t('modal_add_btn');
         nameInput.value = '';
         roleInput.value = 'Waiter';
         pinInput.value = '1234';
+        roleContainer.classList.remove('hidden');
       }
 
       modal.classList.remove('hidden');
@@ -2393,14 +2464,18 @@
 
     function saveStaff() {
       const name = document.getElementById('new-staff-name').value;
-      const role = document.getElementById('new-staff-role').value;
+      let role = document.getElementById('new-staff-role').value;
       const pin = document.getElementById('new-staff-pin').value;
 
-      if (!name) return alert('Please enter a name');
+      if (!name || !pin) return;
 
       if (editingStaffId) {
         const index = staffList.findIndex(s => s.id === editingStaffId);
         if (index !== -1) {
+          // Force role to remain Admin if they are already an Admin to prevent accidental lockout
+          if (staffList[index].role === 'Admin') {
+            role = 'Admin';
+          }
           staffList[index].name = name;
           staffList[index].role = role;
           staffList[index].pin = pin;
@@ -2425,6 +2500,12 @@
 
     function deleteStaff(id) {
       if (currentUser.role !== 'Admin') return alert(t('alert_admin_only_delete'));
+
+      const targetStaff = staffList.find(s => s.id === id);
+      if (targetStaff && targetStaff.role === 'Admin') {
+        return alert(t('alert_admin_cannot_delete_self') || 'Cannot delete Admin accounts.');
+      }
+
       if (confirm(t('confirm_remove_staff'))) {
         staffList = staffList.filter(s => s.id !== id);
         renderStaffTable();
@@ -2700,9 +2781,11 @@
       const btn = document.getElementById('release-table-btn');
       const mobileBtn = document.getElementById('release-table-btn-mobile');
 
-      const canRelease = table &&
-        table.status === STATUS.OCCUPIED &&
-        (table.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role));
+      const isAdmin = currentUser.role === 'Admin';
+      const canRelease = table && (
+        isAdmin || // Admin can always release
+        (table.status === STATUS.OCCUPIED && (table.lockedBy === currentUser.id || currentUser.role === 'Manager'))
+      );
 
       const updateBtn = (target) => {
         if (!target) return;
@@ -2918,13 +3001,20 @@
       const tbody = document.getElementById('orders-table-body');
       if (!tbody) return;
 
-      if (orderHistory.length === 0) {
+      let displayOrders = orderHistory;
+      if (currentUser && currentUser.role === 'Waiter') {
+        displayOrders = orderHistory.filter(o =>
+          o.waiterId === currentUser.id || o.waiter === currentUser.name
+        );
+      }
+
+      if (displayOrders.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No completed orders yet today.</td></tr>`;
         return;
       }
 
       // Sort newest first
-      const sorted = [...orderHistory].sort((a, b) => new Date(b.timestamps.paid) - new Date(a.timestamps.paid));
+      const sorted = [...displayOrders].sort((a, b) => new Date(b.timestamps.paid) - new Date(a.timestamps.paid));
 
       tbody.innerHTML = sorted.map(order => {
         // Create a summary of items (e.g. "2x Burger, 1x Coke ...")
@@ -3290,14 +3380,16 @@
       const activeTable = tables.find(t => t.id === activeTableId);
       if (!activeTable) return;
 
-      // Frontend guard: status check
-      if (activeTable.status !== STATUS.OCCUPIED) {
+      const isAdmin = currentUser.role === 'Admin';
+
+      // Frontend guard: status check (Admin bypasses this)
+      if (!isAdmin && activeTable.status !== STATUS.OCCUPIED) {
         showToast(t('toast_cannot_release_kitchen'), 'error');
         return;
       }
 
       // Frontend guard: permission check
-      const isAuthorized = activeTable.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role);
+      const isAuthorized = isAdmin || activeTable.lockedBy === currentUser.id || currentUser.role === 'Manager';
       if (!isAuthorized) {
         showToast(t('toast_no_permission_release'), 'error');
         return;
@@ -3332,13 +3424,15 @@
       const activeTable = tables.find(t => t.id === activeTableId);
       if (!activeTable) { closeReleaseModal(); return; }
 
+      const isAdmin = currentUser.role === 'Admin';
+
       // Backend-equivalent validation (re-validated server-side in memory)
-      if (activeTable.status !== STATUS.OCCUPIED) {
+      if (!isAdmin && activeTable.status !== STATUS.OCCUPIED) {
         closeReleaseModal();
         showToast(t('toast_cannot_release_kitchen'), 'error');
         return;
       }
-      const isAuthorized = activeTable.lockedBy === currentUser.id || ['Admin', 'Manager'].includes(currentUser.role);
+      const isAuthorized = isAdmin || activeTable.lockedBy === currentUser.id || currentUser.role === 'Manager';
       if (!isAuthorized) {
         closeReleaseModal();
         showToast(t('toast_no_permission_release'), 'error');
@@ -3417,7 +3511,7 @@
           btn.className = 'w-full bg-yellow-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide cursor-wait';
           break;
         case STATUS.READY:
-          btn.innerText = t('kitchen_mark_ready');
+          btn.innerText = t('ready_to_serve');
           btn.className = 'w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide';
           break;
         case STATUS.SERVED:
@@ -3566,7 +3660,6 @@
           </tr>
        `).join('');
       document.getElementById('receipt-items').innerHTML = itemsHtml;
-
       document.getElementById('receipt-modal').classList.remove('hidden');
     }
 
@@ -3590,6 +3683,81 @@
         user: currentUser.name
       });
 
+      // --- PRINT LOGIC ---
+      const printableContent = document.getElementById('printable-receipt').innerHTML;
+
+      const printWindow = window.open('', '_blank', 'width=400,height=600');
+      if (printWindow) {
+        printWindow.document.write(`
+            <html>
+               <head>
+                  <title>Receipt - Hudheel Bile</title>
+                  <style>
+                     body {
+                        font-family: monospace;
+                        font-size: 14px;
+                        color: #000;
+                        padding: 20px;
+                        background: #fff;
+                     }
+                     .text-center { text-align: center; }
+                     .mb-6 { margin-bottom: 24px; }
+                     .mb-3 { margin-bottom: 12px; }
+                     .mb-1 { margin-bottom: 4px; }
+                     .mx-auto { margin-left: auto; margin-right: auto; }
+                     .uppercase { text-transform: uppercase; }
+                     .tracking-widest { letter-spacing: 0.1em; }
+                     .text-2xl { font-size: 24px; }
+                     .text-3xl { font-size: 30px; }
+                     .text-xs { font-size: 12px; }
+                     .text-lg { font-size: 18px; }
+                     .font-black { font-weight: 900; }
+                     .font-bold { font-weight: bold; }
+                     .font-semibold { font-weight: 600; }
+                     .flex { display: flex; }
+                     .justify-between { justify-content: space-between; }
+                     .flex-col { flex-direction: column; }
+                     .gap-2 { gap: 8px; }
+                     .border-b { border-bottom: 1px solid #ccc; }
+                     .border-dashed { border-bottom-style: dashed; }
+                     .pb-4 { padding-bottom: 16px; }
+                     .pb-2 { padding-bottom: 8px; }
+                     .mt-4 { margin-top: 16px; }
+                     .mb-4 { margin-bottom: 16px; }
+                     .mt-8 { margin-top: 32px; }
+                     .w-full { width: 100%; }
+                     .text-left { text-align: left; }
+                     .text-right { text-align: right; }
+                     .py-1 { padding-top: 4px; padding-bottom: 4px; }
+                     .italic { font-style: italic; }
+                     table { border-collapse: collapse; width: 100%; }
+                     th, td { padding: 4px 0; }
+                     
+                     /* Hidden Leaf SVG (FontAwesome substitute since FA might not load in popup) */
+                     .fa-leaf::before {
+                        content: "🍃";
+                        font-size: 24px;
+                        font-style: normal;
+                     }
+                  </style>
+               </head>
+               <body>
+                  ${printableContent}
+                  ${'<scr' + 'ipt>'}
+                     window.onload = function() {
+                        setTimeout(function() {
+                           window.print();
+                           window.close();
+                        }, 250);
+                     };
+                  ${'</scr' + 'ipt>'}
+</body>
+
+</html>
+`);
+        printWindow.document.close();
+      }
+
       closeReceiptModal();
 
       table.timestamps.paid = new Date();
@@ -3607,6 +3775,7 @@
         total: totalAmount,
         payments: JSON.parse(JSON.stringify(table.payRecords)),
         waiter: table.waiterName,
+        waiterId: assignedUserId,
         timestamps: table.timestamps
       });
 
@@ -3695,7 +3864,7 @@
         const isNew = order.status === 'new';
 
         // Match table card color scheme exactly
-        // new (SENT) → purple-to-indigo  |  preparing → green-to-emerald
+        // new (SENT) → purple-to-indigo | preparing → green-to-emerald
         const cardGradient = isNew
           ? 'bg-gradient-to-br from-purple-500 to-indigo-500'
           : 'bg-gradient-to-br from-green-500 to-emerald-500';
@@ -3711,59 +3880,62 @@
 
         // Button — white glass style, matches interior of gradient cards
         const btnAction = isNew
-          ? `<i class="fa-solid fa-fire-burner mr-2"></i>${t('kitchen_start')}`
-          : `<i class="fa-solid fa-bell mr-2"></i>${t('kitchen_mark_ready')}`;
+          ? `<i class="fa-solid fa-fire-burner mr-2"></i> ${t('kitchen_start')}`
+          : `<i class="fa-solid fa-bell mr-2"></i> ${t('kitchen_mark_ready')}`;
         const nextStatus = isNew ? 'preparing' : 'ready';
 
         return `
-          <div class="group ${cardGradient} rounded-3xl overflow-hidden flex flex-col relative transition-all duration-500 hover:-translate-y-2 ${cardShadow} cursor-default">
+        <div class="group ${cardGradient} rounded-3xl overflow-hidden flex flex-col relative transition-all duration-500 hover:-translate-y-2 ${cardShadow} cursor-default">
 
-            <!-- Glow blob -->
-            <div class="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-20 blur-2xl pointer-events-none transition-opacity duration-300 group-hover:opacity-40"
-              style="background: radial-gradient(circle, ${glowColor}, transparent 70%);"></div>
+          <!--Glow blob-->
+          <div
+            class="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-20 blur-2xl pointer-events-none transition-opacity duration-300 group-hover:opacity-40"
+            style="background: radial-gradient(circle, ${glowColor}, transparent 70%);"></div>
 
-            <!-- Header -->
-            <div class="p-5 flex justify-between items-start relative z-10">
-              <div>
-                <div class="flex items-center gap-2 mb-1">
-                  <h3 class="font-black text-2xl text-white tracking-tight">${order.tableId}</h3>
-                  <span class="text-xs text-white/50 font-bold mt-1">#${order.id}</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs text-white/70">
-                  <i class="fa-regular fa-clock text-[10px]"></i>
-                  <span>${order.time}</span>
-                  <span class="text-white/30">|</span>
-                  <i class="fa-solid fa-user text-[10px]"></i>
-                  <span>${order.waiterName.split(' ')[0]}</span>
-                </div>
+          <!--Header -->
+          <div class="p-5 flex justify-between items-start relative z-10">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-black text-2xl text-white tracking-tight">${order.tableId}</h3>
+                <span class="text-xs text-white/50 font-bold mt-1">#${order.id}</span>
               </div>
-              <span class="flex items-center gap-1.5 bg-white/20 border border-white/30 backdrop-blur-sm px-3 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-white shadow-inner">
-                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                ${badgeLabel}
-              </span>
+              <div class="flex items-center gap-2 text-xs text-white/70">
+                <i class="fa-regular fa-clock text-[10px]"></i>
+                <span>${order.time}</span>
+                <span class="text-white/30">|</span>
+                <i class="fa-solid fa-user text-[10px]"></i>
+                <span>${order.waiterName.split(' ')[0]}</span>
+              </div>
             </div>
-
-            <!-- Divider -->
-            <div class="mx-5 border-t border-white/15"></div>
-
-            <!-- Items -->
-            <div class="p-5 flex-1 space-y-2.5 relative z-10">
-              ${order.items.map(i => `
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-white/90 font-semibold">${i.name}</span>
-                  <span class="text-xs font-black text-white bg-white/20 border border-white/20 px-2.5 py-1 rounded-xl">×${i.qty}</span>
-                </div>
-              `).join('')}
-            </div>
-
-            <!-- Action Button -->
-            <div class="p-4 pt-0 relative z-10">
-              <button onclick="updateKitchenStatus(${order.id}, '${nextStatus}')"
-                class="w-full py-3.5 rounded-2xl bg-black/20 hover:bg-black/30 border border-white/20 text-white font-black text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-xl active:scale-95 hover:-translate-y-0.5 backdrop-blur-sm">
-                ${btnAction}
-              </button>
-            </div>
+            <span
+              class="flex items-center gap-1.5 bg-white/20 border border-white/30 backdrop-blur-sm px-3 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-white shadow-inner">
+              <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+              ${badgeLabel}
+            </span>
           </div>
+
+          <!--Divider -->
+          <div class="mx-5 border-t border-white/15"></div>
+
+          <!--Items -->
+          <div class="p-5 flex-1 space-y-2.5 relative z-10">
+            ${order.items.map(i => `
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-white/90 font-semibold">${i.name}</span>
+              <span
+                class="text-xs font-black text-white bg-white/20 border border-white/20 px-2.5 py-1 rounded-xl">×${i.qty}</span>
+            </div>
+            `).join('')}
+          </div>
+
+          <!--Action Button-->
+          <div class="p-4 pt-0 relative z-10">
+            <button onclick="updateKitchenStatus(${order.id}, '${nextStatus}')"
+              class="w-full py-3.5 rounded-2xl bg-black/20 hover:bg-black/30 border border-white/20 text-white font-black text-sm uppercase tracking-wide transition-all duration-300 hover:shadow-xl active:scale-95 hover:-translate-y-0.5 backdrop-blur-sm">
+              ${btnAction}
+            </button>
+          </div>
+        </div>
         `;
       }).join('');
 
@@ -3808,7 +3980,8 @@
             showToast(n.message, "info");
           }, idx * 1500);
         });
-        pendingNotifications = pendingNotifications.filter(n => n.targetUserId !== currentUser.id && currentUser.role !== 'Admin');
+        pendingNotifications = pendingNotifications.filter(n => n.targetUserId !== currentUser.id && currentUser.role !==
+          'Admin');
         renderTablesView();
       }
     }
@@ -3908,7 +4081,8 @@
               <i class="fa-solid fa-door-open text-white text-lg"></i>
             </div>
             <h2 class="text-2xl font-extrabold text-white" data-i18n="release_title">Release Table</h2>
-            <p class="text-white/80 text-sm mt-1" data-i18n="release_confirm_msg">Are you sure you want to release this
+            <p class="text-white/80 text-sm mt-1" data-i18n="release_confirm_msg">Are you sure you want to release
+              this
               table?</p>
           </div>
           <button onclick="closeReleaseModal()"
