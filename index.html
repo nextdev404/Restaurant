@@ -1953,8 +1953,13 @@
         userSelect.appendChild(opt);
       });
 
-      // Show container
-      userContainer.classList.remove('hidden');
+      // Logic: If there's only one user in this role (like Admin), skip the dropdown.
+      if (filteredStaff.length === 1) {
+        userSelect.value = filteredStaff[0].id; // Auto-select the only user
+        userContainer.classList.add('hidden'); // Hide the dropdown
+      } else {
+        userContainer.classList.remove('hidden'); // Show for Waiters etc.
+      }
 
       document.querySelectorAll('.role-btn').forEach(btn => {
         const isActive = btn.dataset.role === role;
@@ -3733,7 +3738,15 @@
                      table { border-collapse: collapse; width: 100%; }
                      th, td { padding: 4px 0; }
                      
-                     /* Hidden Leaf SVG (FontAwesome substitute since FA might not load in popup) */
+                     /* Prevent SVGs (like FontAwesome logos) from blowing up in print mode */
+                     svg, img {
+                        width: 32px !important;
+                        height: 32px !important;
+                        margin: 0 auto;
+                        display: block;
+                     }
+                     
+                     /* Hidden Leaf SVG backup if FA script fails to load in popup */
                      .fa-leaf::before {
                         content: "🍃";
                         font-size: 24px;
