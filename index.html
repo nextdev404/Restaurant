@@ -441,21 +441,28 @@
 
             <!-- Payment Methods -->
             <div class="flex gap-2 sm:gap-3 mb-6" id="payment-methods-container">
+
+              <!-- Cash -->
               <button onclick="setPaymentMethod('Cash')" id="pay-cash"
-                class="payment-btn flex-1 py-3 px-2 rounded-xl border border-primary bg-primary/5 text-primary flex flex-col items-center justify-center gap-1 transition-all shadow-sm">
+                class="payment-btn flex-1 py-3 px-2 rounded-xl border-2 border-primary bg-primary/5 text-primary flex flex-col items-center justify-center gap-1.5 transition-all shadow-sm">
                 <i class="fa-solid fa-money-bill text-lg"></i>
                 <span class="text-[10px] font-bold uppercase tracking-wide" data-i18n="pay_cash">Cash</span>
               </button>
-              <button onclick="setPaymentMethod('Card')" id="pay-card"
-                class="payment-btn flex-1 py-3 px-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-400 hover:border-gray-300 flex flex-col items-center justify-center gap-1 transition-all shadow-sm">
-                <i class="fa-regular fa-credit-card text-lg"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wide" data-i18n="pay_card">Card</span>
+
+              <!-- Zaad -->
+              <button onclick="setPaymentMethod('Zaad')" id="pay-zaad"
+                class="payment-btn flex-1 py-3 px-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-gray-400 hover:border-[#4caf50] hover:text-[#4caf50] hover:bg-green-50 dark:hover:bg-green-900/20 flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-mobile-screen-button text-lg"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wide" data-i18n="pay_card">Zaad</span>
               </button>
-              <button onclick="setPaymentMethod('QR')" id="pay-qr"
-                class="payment-btn flex-1 py-3 px-2 rounded-xl border border-gray-200 dark:border-gray-600 text-gray-400 hover:border-gray-300 flex flex-col items-center justify-center gap-1 transition-all shadow-sm">
-                <i class="fa-solid fa-qrcode text-lg"></i>
-                <span class="text-[10px] font-bold uppercase tracking-wide" data-i18n="pay_qr">QR Code</span>
+
+              <!-- E-dahab -->
+              <button onclick="setPaymentMethod('E-dahab')" id="pay-e-dahab"
+                class="payment-btn flex-1 py-3 px-2 rounded-xl border-2 border-gray-200 dark:border-gray-600 text-gray-400 hover:border-orange-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-mobile-screen-button text-lg"></i>
+                <span class="text-[10px] font-bold uppercase tracking-wide" data-i18n="pay_qr">E-dahab</span>
               </button>
+
             </div>
 
             <button id="main-action-btn" onclick="handleMainAction()"
@@ -740,7 +747,19 @@
             </div>
           </div>
 
+          <!-- Payment Method Breakdown (Admin/Manager only) -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 md:p-6">
+            <div id="payment-summary-section">
+              <!-- Injected by renderPaymentSummary() -->
+            </div>
+          </div>
+
+          <div class="h-6"></div>
+
+
           <!-- Staff Table Row -->
+
           <div
             class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div
@@ -750,7 +769,7 @@
                   <span class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-sm">
                     <i class="fa-solid fa-users-gear"></i>
                   </span>
-                  Team Management
+                  <span data-i18n="admin_team">Team Management</span>
                 </h3>
                 <p class="text-xs text-gray-400 mt-1 ml-9" data-i18n="admin_team_sub">Manage your staff roster</p>
               </div>
@@ -859,7 +878,7 @@
 
       <!-- ORDERS VIEW -->
       <div id="view-orders"
-        class="hidden flex-1 bg-gray-50 dark:bg-gray-900 rounded-[2rem] overflow-hidden flex flex-col h-full p-4 md:p-8 transition-colors duration-300">
+        class="hidden flex-1 bg-gray-50 dark:bg-gray-900 rounded-[2rem] overflow-y-auto flex flex-col p-4 md:p-8 transition-colors duration-300">
         <header class="flex items-center justify-between gap-4 mb-6 md:mb-8">
           <div class="flex items-center gap-4">
             <button onclick="toggleSidebar()" class="p-3 bg-white shadow-sm dark:bg-gray-800 rounded-xl lg:hidden"><i
@@ -879,15 +898,11 @@
           </div>
         </header>
 
-        <div class="flex-1 flex flex-col relative">
-          <!-- Gradient overlay for scroll -->
-          <div
-            class="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-gray-50 dark:from-gray-900 to-transparent z-10 pointer-events-none">
-          </div>
+        <div class="flex-1 flex flex-col">
 
           <div class="overflow-x-auto hide-scrollbar flex-1 -mx-4 px-4 md:mx-0 md:px-0">
             <table class="w-full text-left min-w-[800px] border-separate border-spacing-y-3">
-              <thead>
+              <thead class="sticky top-0 z-10 bg-gray-50 dark:bg-gray-900">
                 <tr class="text-xs uppercase tracking-wider font-bold text-gray-400 dark:text-gray-500 pb-2">
                   <th class="px-6 py-3 font-medium" data-i18n="orders_col_details">Order Details</th>
                   <th class="px-6 py-3 font-medium" data-i18n="orders_col_assigned">Assigned To</th>
@@ -1392,8 +1407,8 @@
           tax: 'Tax 5%',
           total_amount: 'Total Amount',
           pay_cash: 'Cash',
-          pay_card: 'Card',
-          pay_qr: 'QR Code',
+          pay_card: 'Zaad',
+          pay_qr: 'E-dahab',
           send_to_kitchen: 'Send to Kitchen',
           recall_order: 'Recall Order',
           waiting_chef: 'Waiting for Chef...',
@@ -1558,7 +1573,18 @@
           status_sent: 'Sent to Kitchen',
           status_preparing: 'Preparing',
           status_ready: 'Ready to Serve',
+          status_served: 'Served',
           status_payment: 'Waiting Payment',
+          status_waiting_for_payment: 'Waiting Payment',
+          // Payment Breakdown
+          payment_breakdown: 'Payment Breakdown',
+          payment_breakdown_sub: "Today's collections by payment method",
+          payment_transaction: 'transaction',
+          payment_transactions: 'transactions',
+          payment_last7: 'Last 7 Days',
+          payment_date_col: 'Date',
+          payment_total_col: 'Total',
+          payment_today_badge: 'Today',
           // Table card buttons
           btn_seat_guest: 'Seat Guest',
           btn_view_order: 'View Order',
@@ -1582,9 +1608,9 @@
           sub_total: 'Wadarta Hoose',
           tax: 'Canshuurta 5%',
           total_amount: 'Wadarta Guud',
-          pay_cash: 'Lacag Cad',
-          pay_card: 'Kaarka',
-          pay_qr: 'Koodhka QR',
+          pay_cash: 'Kaash',
+          pay_card: 'Zaad',
+          pay_qr: 'E-dahab',
           send_to_kitchen: 'U Dir Jikada',
           recall_order: 'Dib u Soo Qaad',
           waiting_chef: 'Sugaya Kariyaha...',
@@ -1630,7 +1656,7 @@
           admin_days7: '7 Maalmood',
           admin_top_waiters: 'Kababyada Ugu Fiican',
           admin_top_rank: 'Liiska Maanta',
-          admin_team: 'Maamulka Kooxda',
+          admin_team: 'Maaraynta Shaqaalaha',
           admin_team_sub: 'Shaqaalahaaga maamul',
           admin_add_staff: 'Kudar Shaqaale',
           admin_no_waiters: 'Wali dalab maanta ma jiro.',
@@ -1750,7 +1776,18 @@
           status_sent: 'Loo Diray Jikada',
           status_preparing: 'Diyaarinta',
           status_ready: 'Diyaar',
+          status_served: 'Loo Shaqeeyay',
           status_payment: 'Sugaya Lacag Bixinta',
+          status_waiting_for_payment: 'Sugaya Lacag Bixinta',
+          // Payment Breakdown
+          payment_breakdown: 'Kala-saarista Lacag-bixinta',
+          payment_breakdown_sub: 'Lacagaha maanta  iyo Sida loo kala qaaday',
+          payment_transaction: 'macaamilad',
+          payment_transactions: 'macaamiladood',
+          payment_last7: '7 Maalmood ee la soo dhaafay',
+          payment_date_col: 'Taariikhda',
+          payment_total_col: 'Wadarta',
+          payment_today_badge: 'Maanta',
           // Table card buttons
           btn_seat_guest: 'Fadhiisi Martida',
           btn_view_order: 'Fiiri Dalabka',
@@ -2349,6 +2386,106 @@
             }).join('');
           }
         }
+        renderPaymentSummary();
+      }
+
+      // --- PAYMENT METHOD SUMMARY (Admin/Manager) ---
+      function renderPaymentSummary() {
+        const container = document.getElementById('payment-summary-section');
+        if (!container) return;
+
+        const methods = ['Cash', 'Zaad', 'E-dahab'];
+        const methodColors = {
+          Cash: { bg: 'from-emerald-500 to-green-600', icon: 'fa-money-bill', shadow: 'shadow-emerald-500/30', light: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
+          Zaad: { bg: 'from-blue-500 to-cyan-600', icon: 'fa-mobile-screen-button', shadow: 'shadow-blue-500/30', light: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
+          'E-dahab': { bg: 'from-orange-400 to-amber-500', icon: 'fa-mobile-screen-button', shadow: 'shadow-orange-400/30', light: 'bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' },
+        };
+        // Translated display names for each method
+        const methodLabels = { 'Cash': t('pay_cash'), 'Zaad': t('pay_card'), 'E-dahab': t('pay_qr') };
+
+        // --- Today's breakdown ---
+        const today = new Date().toLocaleDateString();
+        const todaysOrders = orderHistory.filter(o => new Date(o.timestamps.paid).toLocaleDateString() === today);
+
+        const todayStats = {};
+        methods.forEach(m => { todayStats[m] = { count: 0, total: 0 }; });
+        todaysOrders.forEach(o => {
+          const m = (o.payments && o.payments[0]) ? o.payments[0].method : 'Cash';
+          if (!todayStats[m]) todayStats[m] = { count: 0, total: 0 };
+          todayStats[m].count++;
+          todayStats[m].total += o.total;
+        });
+
+        // --- Last 7 days breakdown ---
+        const weekly = {};
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const key = d.toLocaleDateString();
+          const label = d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+          weekly[key] = { label, Cash: 0, Zaad: 0, 'E-dahab': 0 };
+        }
+        orderHistory.forEach(o => {
+          const key = new Date(o.timestamps.paid).toLocaleDateString();
+          if (!weekly[key]) return;
+          const m = (o.payments && o.payments[0]) ? o.payments[0].method : 'Cash';
+          if (weekly[key][m] !== undefined) weekly[key][m] += o.total;
+        });
+
+        // Render
+        container.innerHTML = `
+          <div class="mb-6">
+            <h3 class="text-xl font-black text-gray-800 dark:text-white mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-primary"></i> ${t('payment_breakdown')}
+            </h3>
+            <p class="text-sm text-gray-400">${t('payment_breakdown_sub')}</p>
+          </div>
+
+          <!-- Today Cards -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            ${methods.map(m => {
+          const s = todayStats[m] || { count: 0, total: 0 };
+          const c = methodColors[m];
+          const txLabel = s.count !== 1 ? t('payment_transactions') : t('payment_transaction');
+          return `
+              <div class="relative bg-gradient-to-br ${c.bg} rounded-2xl p-5 text-white overflow-hidden shadow-lg ${c.shadow}">
+                <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/10 rounded-full"></div>
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3 backdrop-blur-sm">
+                  <i class="fa-solid ${c.icon} text-lg"></i>
+                </div>
+                <p class="text-xs font-bold uppercase tracking-wider text-white/70 mb-1">${methodLabels[m]}</p>
+                <p class="text-2xl font-black">\$${s.total.toFixed(2)}</p>
+                <p class="text-xs text-white/60 mt-1">${s.count} ${txLabel}</p>
+              </div>`;
+        }).join('')}
+          </div>
+
+          <!-- Weekly Table -->
+          <h4 class="text-sm font-black uppercase tracking-wider text-gray-400 mb-3">${t('payment_last7')}</h4>
+          <div class="overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-700">
+            <table class="w-full text-sm text-left min-w-[480px]">
+              <thead class="bg-gray-50 dark:bg-gray-800/60">
+                <tr>
+                  <th class="px-4 py-3 font-bold text-gray-500 dark:text-gray-400">${t('payment_date_col')}</th>
+                  ${methods.map(m => `<th class="px-4 py-3 font-bold text-gray-500 dark:text-gray-400 text-right">${methodLabels[m]}</th>`).join('')}
+                  <th class="px-4 py-3 font-bold text-gray-500 dark:text-gray-400 text-right">${t('payment_total_col')}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                ${Object.values(weekly).reverse().map(day => {
+          const rowTotal = methods.reduce((s, m) => s + (day[m] || 0), 0);
+          const isToday = day.label === new Date().toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+          return `
+                  <tr class="${isToday ? 'bg-primary/5 dark:bg-primary/10 font-bold' : 'bg-white dark:bg-gray-800'} hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td class="px-4 py-3 text-gray-700 dark:text-gray-300 font-semibold">${day.label}${isToday ? ` <span class="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded-full ml-1">${t('payment_today_badge')}</span>` : ''}</td>
+                    ${methods.map(m => `<td class="px-4 py-3 text-right text-gray-600 dark:text-gray-400">${day[m] > 0 ? '<span class="font-bold">$' + day[m].toFixed(2) + '</span>' : '<span class="text-gray-300 dark:text-gray-600">—</span>'}</td>`).join('')}
+                    <td class="px-4 py-3 text-right font-black text-gray-900 dark:text-white">${rowTotal > 0 ? '$' + rowTotal.toFixed(2) : '—'}</td>
+                  </tr>`;
+        }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
       }
 
       // --- DARK MODE LOGIC ---
@@ -3047,7 +3184,30 @@
                 </div>
                 <div>
                   <div class="font-bold text-gray-900 dark:text-white text-base">#${order.orderId}</div>
-                  <div class="text-xs font-semibold text-green-500 bg-green-50 dark:bg-green-500/10 px-2 py-0.5 rounded-full inline-block mt-1">Paid</div>
+                  <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                    <div class="text-xs font-semibold text-green-500 bg-green-50 dark:bg-green-500/10 px-2 py-0.5 rounded-full inline-block">Paid</div>
+                    ${(() => {
+              const method = (order.payments && order.payments[0]) ? order.payments[0].method : 'Cash';
+              const colors = { 'Cash': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', 'Zaad': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', 'E-dahab': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' };
+              const icons = { 'Cash': 'fa-money-bill', 'Zaad': 'fa-mobile-screen-button', 'E-dahab': 'fa-mobile-screen-button' };
+              const colorClass = colors[method] || 'bg-gray-100 text-gray-600';
+              const iconClass = icons[method] || 'fa-credit-card';
+              const canEdit = ['Admin', 'Manager', 'Cashier'].includes(currentUser.role);
+              if (canEdit) {
+                return `<div class="relative inline-block">
+                          <select onchange="changePaymentMethod(${order.orderId}, this.value)" title="Change payment method"
+                            class="text-xs font-bold px-2 py-0.5 rounded-full border-0 outline-none cursor-pointer ${colorClass} appearance-none pr-5">
+                            <option value="Cash" ${method === 'Cash' ? 'selected' : ''}>💵 Cash</option>
+                            <option value="Zaad" ${method === 'Zaad' ? 'selected' : ''}>📱 Zaad</option>
+                            <option value="E-dahab" ${method === 'E-dahab' ? 'selected' : ''}>🧾 E-dahab</option>
+                          </select>
+                          <i class="fa-solid fa-chevron-down absolute right-1 top-1/2 -translate-y-1/2 text-[8px] pointer-events-none"></i>
+                        </div>`;
+              } else {
+                return `<span class="text-xs font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 ${colorClass}"><i class="fa-solid ${iconClass} text-[9px]"></i>${method}</span>`;
+              }
+            })()}
+                  </div>
                 </div>
               </div>
             </td>
@@ -3102,6 +3262,21 @@
           </tr>
         `;
         }).join('');
+      }
+
+      function changePaymentMethod(orderId, newMethod) {
+        const order = orderHistory.find(o => o.orderId === orderId);
+        if (!order) return;
+        if (!['Admin', 'Manager', 'Cashier'].includes(currentUser.role)) return;
+
+        if (order.payments && order.payments.length > 0) {
+          order.payments[0].method = newMethod;
+        } else {
+          order.payments = [{ method: newMethod, amount: order.total, timestamp: new Date().toISOString(), user: currentUser.name }];
+        }
+        saveData();
+        renderOrderHistory();
+        showToast(`Payment updated to ${newMethod}`, 'success');
       }
 
       function printOrderReceipt(orderId) {
