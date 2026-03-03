@@ -3593,21 +3593,21 @@
         const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
         return `
                 <div onclick="setCategory('${cat.id}')" 
-                     class="cursor-pointer flex-shrink-0 min-w-[100px] md:min-w-[110px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-center justify-center gap-2 md:gap-3 relative group ${activeCategory === cat.id ? 'bg-[#ecfdf5] border-[#10b981] shadow-sm' : 'bg-white border-transparent hover:border-gray-200'}">
+                     class="cursor-pointer flex-shrink-0 min-w-[100px] md:min-w-[110px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-center justify-center gap-2 md:gap-3 relative group ${activeCategory === cat.id ? 'bg-[#ecfdf5] dark:bg-emerald-900/30 border-[#10b981]  shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-500'}">
                     
                     ${isAdmin && cat.id !== 'all' ? `
                     <div class="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="event.stopPropagation(); openCategoryModal('${cat.id}')" class="w-6 h-6 rounded-full bg-white text-blue-500 shadow-md hover:bg-blue-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="event.stopPropagation(); deleteCategory('${cat.id}')" class="w-6 h-6 rounded-full bg-white text-red-500 shadow-md hover:bg-red-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="event.stopPropagation(); openCategoryModal('${cat.id}')" class="w-6 h-6 rounded-full bg-white dark:bg-gray-700 text-blue-500 shadow-md hover:bg-blue-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="event.stopPropagation(); deleteCategory('${cat.id}')" class="w-6 h-6 rounded-full bg-white dark:bg-gray-700 text-red-500 shadow-md hover:bg-red-50 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
                     </div>
                     ` : ''}
 
-                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-lg transition-colors ${activeCategory === cat.id ? 'bg-[#10b981] text-white' : 'bg-gray-100 text-gray-400 group-hover:text-gray-600'}">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-lg transition-colors ${activeCategory === cat.id ? 'bg-[#10b981] text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-300 group-hover:text-gray-600'}">
                         <i class="fa-solid ${cat.icon}"></i>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-bold text-xs md:text-sm text-gray-800 transition-colors ${activeCategory === cat.id ? 'text-[#10b981]' : ''}">${cat.name}</h3>
-                        <p class="text-[10px] text-gray-400 mt-0.5">${count} items</p>
+                        <h3 class="font-bold text-xs md:text-sm text-gray-800 dark:text-white transition-colors ${activeCategory === cat.id ? 'text-[#10b981]' : ''}">${cat.name}</h3>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-0.5">${count} items</p>
                     </div>
                 </div>
             `;
