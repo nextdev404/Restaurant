@@ -106,6 +106,15 @@
     .sidebar-mobile-visible {
       transform: translateX(0);
     }
+
+    /* Category horizontal scroll */
+    #category-container {
+      user-select: none;
+    }
+
+    #category-container.dragging {
+      cursor: grabbing !important;
+    }
   </style>
 </head>
 
@@ -189,6 +198,16 @@
               </div>
               <span
                 class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Cashier</span>
+            </button>
+            <button type="button" onclick="selectLoginRole(this.dataset.role)"
+              class="role-btn p-3 md:p-4 rounded-2xl border border-gray-100 bg-gray-50 hover:border-primary hover:bg-primary-light/30 transition-all flex flex-col items-center gap-2 md:gap-3 group cursor-pointer"
+              data-role="Customer">
+              <div
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors text-sm md:text-base pointer-events-none">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <span
+                class="text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none">Customer</span>
             </button>
           </div>
 
@@ -319,7 +338,7 @@
       <div id="view-pos" class="flex-1 flex flex-col lg:flex-row gap-4 h-full w-full">
 
         <!-- CENTER: Menu & Categories -->
-        <main class="flex-1 flex flex-col h-full min-w-0">
+        <main class="flex-1 flex flex-col h-full min-w-0 relative">
           <!-- Top Bar -->
           <header class="flex items-center justify-between mb-4 lg:mb-6 flex-shrink-0">
             <button onclick="toggleSidebar()"
@@ -327,7 +346,7 @@
               <i class="fa-solid fa-bars"></i>
             </button>
 
-            <div
+            <div id="search-input-container"
               class="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-sm flex items-center px-3 py-2.5 md:px-4 md:py-3 transition-colors duration-300 mr-1.5 md:mr-4">
               <i class="fa-solid fa-search text-gray-400 mr-2 md:mr-3 text-sm"></i>
               <input type="text" id="search-input" placeholder="Search Product..." oninput="renderMenu()"
@@ -344,11 +363,26 @@
           </header>
 
           <!-- Scrollable Area -->
-          <div class="flex-1 overflow-y-auto hide-scrollbar pb-24 lg:pb-20 relative">
+          <div class="flex-1 overflow-y-auto hide-scrollbar pb-24 lg:pb-20 relative" id="main-scroll-area">
 
-            <!-- Categories -->
-            <div class="flex gap-3 lg:gap-4 mb-6 overflow-x-auto hide-scrollbar pb-2" id="category-container">
-              <!-- Injected JS -->
+            <!-- Categories with Scroll Buttons -->
+            <div class="relative group mb-6 flex items-center">
+              <!-- Left Scroll Button -->
+              <button id="scroll-cat-left" onclick="scrollCategories(-300)"
+                class="hidden md:flex absolute -left-1 z-10 w-7 h-14 bg-[#10b981] text-white rounded-r-[50px] shadow-lg hover:bg-emerald-600 transition-all items-center justify-center opacity-0 pointer-events-none active:scale-95">
+                <i class="fa-solid fa-chevron-left text-[11px] pr-1"></i>
+              </button>
+
+              <div class="flex gap-3 lg:gap-4 overflow-x-auto hide-scrollbar pb-2 w-full px-1" id="category-container"
+                style="-webkit-overflow-scrolling: touch;" onscroll="updateCategoryScrollButtons()">
+                <!-- Injected JS -->
+              </div>
+
+              <!-- Right Scroll Button -->
+              <button id="scroll-cat-right" onclick="scrollCategories(300)"
+                class="hidden md:flex absolute -right-1 z-10 w-7 h-14 bg-[#10b981] text-white rounded-l-[50px] shadow-lg hover:bg-emerald-600 transition-all items-center justify-center opacity-0 pointer-events-none active:scale-95">
+                <i class="fa-solid fa-chevron-right text-[11px] pl-1"></i>
+              </button>
             </div>
 
             <!-- Menu Grid -->
@@ -357,6 +391,7 @@
             </div>
 
           </div>
+
         </main>
 
         <!-- RIGHT: Cart Panel (Responsive) -->
@@ -563,17 +598,45 @@
             </div>
           </div>
         </header>
-        <div class="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
-          <div id="kitchen-grid"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pb-20">
-            <!-- Tickets -->
+        <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+          <!-- Mobile Out-of-Stock Strip (visible only on small screens) -->
+          <div id="unavailable-mobile-strip"
+            class="lg:hidden hidden border-b border-red-100 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10 px-4 py-2 flex-shrink-0">
           </div>
-          <div id="kitchen-empty"
-            class="hidden h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
-            <i class="fa-solid fa-check-circle text-6xl mb-4 text-gray-300 dark:text-gray-700"></i>
-            <p class="text-xl font-medium text-center" data-i18n="kitchen_all_done">All orders completed</p>
+
+          <!-- Main Kitchen Grid -->
+          <div class="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
+            <div id="kitchen-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 pb-20">
+              <!-- Tickets -->
+            </div>
+            <div id="kitchen-empty"
+              class="hidden h-full flex flex-col items-center justify-center text-gray-400 dark:text-gray-600">
+              <i class="fa-solid fa-check-circle text-6xl mb-4 text-gray-300 dark:text-gray-700"></i>
+              <p class="text-xl font-medium text-center" data-i18n="kitchen_all_done">All orders completed</p>
+            </div>
+          </div>
+
+          <!-- Right Sidebar: Out of Stock Items (desktop only) -->
+          <div
+            class="hidden lg:flex flex-col w-60 xl:w-64 border-l border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40 overflow-hidden flex-shrink-0">
+            <div class="px-4 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-red-500"></div>
+              <h3 class="text-sm font-black text-gray-700 dark:text-white uppercase tracking-wider"
+                data-i18n="out_of_stock">Out of Stock</h3>
+            </div>
+            <div id="unavailable-sidebar-list" class="flex-1 overflow-y-auto custom-scrollbar py-2">
+              <!-- Filled by renderUnavailableSidebar() -->
+            </div>
+            <div id="unavailable-sidebar-empty"
+              class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <i class="fa-solid fa-circle-check text-3xl text-emerald-400 mb-2"></i>
+              <p class="text-xs text-gray-400 font-medium">All items available</p>
+            </div>
           </div>
         </div>
+
       </div>
 
       <!-- ADMIN VIEW -->
@@ -1291,6 +1354,41 @@
     </div>
   </div>
 
+  <!-- Post-Cook Availability Check Modal -->
+  <div id="availability-check-modal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAvailabilityModal()"></div>
+    <div class="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-emerald-500 to-green-400 px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
+            <i class="fa-solid fa-bell text-white text-lg"></i>
+          </div>
+          <div>
+            <h2 class="text-white font-black text-lg" data-i18n="avail_modal_title">Order Ready!</h2>
+            <p class="text-white/80 text-xs" data-i18n="avail_modal_subtitle">Mark item availability before confirming
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Item List -->
+      <div id="availability-check-items" class="divide-y divide-gray-100 dark:divide-gray-700 max-h-80 overflow-y-auto">
+        <!-- Filled by JS -->
+      </div>
+      <!-- Footer -->
+      <div class="px-6 py-4 flex gap-3 border-t border-gray-100 dark:border-gray-700">
+        <button onclick="closeAvailabilityModal()"
+          class="flex-1 py-3 rounded-2xl border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+          <span data-i18n="avail_cancel">Cancel</span>
+        </button>
+        <button onclick="confirmAvailabilityAndMarkReady()"
+          class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-400 text-white font-bold text-sm hover:opacity-90 transition shadow-lg shadow-emerald-200 dark:shadow-none">
+          <span data-i18n="avail_confirm">Confirm &amp; Mark Ready</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Global Alerts/Notifications -->
   <div id="toast"
     class="fixed top-6 right-6 left-6 md:left-auto bg-gray-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl transform translate-y-[-100px] md:translate-y-0 md:translate-x-40 opacity-0 transition-all duration-300 z-[70] flex items-center gap-3 pointer-events-none cursor-pointer min-w-[260px]"
@@ -1380,7 +1478,8 @@
       { id: 3, name: 'Arlene McCoy', role: 'Waiter', status: 'Active', pin: '1234', avatar: 'Arlene+McCoy' },
       { id: 4, name: 'Esther Howard', role: 'Waiter', status: 'Active', pin: '1234', avatar: 'Esther+Howard' },
       { id: 5, name: 'Chef Gordon', role: 'Chef', status: 'Offline', pin: '1234', avatar: 'Chef' },
-      { id: 6, name: 'Cash Register', role: 'Cashier', status: 'Active', pin: '1234', avatar: 'Register' }
+      { id: 6, name: 'Cash Register', role: 'Cashier', status: 'Active', pin: '1234', avatar: 'Register' },
+      { id: 7, name: 'Guest Customer', role: 'Customer', status: 'Active', pin: '0000', avatar: 'Guest' }
     ];
 
     // ==========================================
@@ -1440,6 +1539,17 @@
         ready_to_serve: 'Ready to Serve',
 
         kitchen_all_done: 'All orders completed',
+        out_of_stock: 'Out of Stock',
+        stock_available: '↩ Available',
+        stock_all_available: 'All items available',
+        stock_out_of_stock_label: 'Out of Stock',
+        avail_modal_title: 'Order Ready!',
+        avail_modal_subtitle: 'Mark item availability before confirming',
+        avail_ordered: 'Ordered',
+        avail_still_available: '✅ Still Available',
+        avail_out_of_stock: '⛔ Out of Stock',
+        avail_cancel: 'Cancel',
+        avail_confirm: 'Confirm & Mark Ready',
         // Admin Dashboard
         admin_title: 'Admin Dashboard',
         admin_subtitle: "Today's performance at a glance",
@@ -1642,6 +1752,17 @@
         ready_to_serve: 'Waa diyaar Cuntadu',
 
         kitchen_all_done: 'Dhammaan dalabyadu way dhammaadeen',
+        out_of_stock: 'Cuntotransyinka Dhamaday',
+        stock_available: '↩ La heli Karo',
+        stock_all_available: 'Dhammaan cuntooyinka way dhamadeen',
+        stock_out_of_stock_label: 'Dhamaaday',
+        avail_modal_title: 'Dalabka Diyaarka ah!',
+        avail_modal_subtitle: 'Hubi helitaanka cuntada ka hor xaqiijinta',
+        avail_ordered: 'La Dalbaday',
+        avail_still_available: '✅ Waa La Heli Karaa',
+        avail_out_of_stock: '⛔ Dhamaaday',
+        avail_cancel: 'Ka Noqo',
+        avail_confirm: 'Xaqiiji & Diyaar ku Calaamadi',
         // Admin Dashboard
         admin_title: 'Bogga Maamulka',
         admin_subtitle: 'Guudmar maanta ah',
@@ -1904,12 +2025,12 @@
     ];
 
     let products = [
-      { id: 1, name: "Original Chess Meat Burger With Chips", price: 23.99, category: 'burger', image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=400" },
-      { id: 2, name: "Fresh Orange Juice With Basil Seed", price: 12.99, category: 'breakfast', image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?q=80&w=400" },
-      { id: 3, name: "Meat Sushi Maki With Tuna", price: 9.99, category: 'main', image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=400" },
-      { id: 4, name: "Tacos Salsa With Chickens Grilled", price: 14.99, category: 'main', image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=400" },
-      { id: 5, name: "Tasty Vegetable Salad Healthy", price: 17.99, category: 'soups', image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400" },
-      { id: 6, name: "Original Chess Burger With French Fries", price: 10.59, category: 'burger', image: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=400" },
+      { id: 1, name: "Original Chess Meat Burger With Chips", price: 23.99, category: 'burger', status: 'Available', stock: 10, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=400" },
+      { id: 2, name: "Fresh Orange Juice With Basil Seed", price: 12.99, category: 'breakfast', status: 'Available', stock: 8, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?q=80&w=400" },
+      { id: 3, name: "Meat Sushi Maki With Tuna", price: 9.99, category: 'main', status: 'Available', stock: 5, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=400" },
+      { id: 4, name: "Tacos Salsa With Chickens Grilled", price: 14.99, category: 'main', status: 'Available', stock: 7, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=400" },
+      { id: 5, name: "Tasty Vegetable Salad Healthy", price: 17.99, category: 'soups', status: 'Available', stock: 12, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=400" },
+      { id: 6, name: "Original Chess Burger With French Fries", price: 10.59, category: 'burger', status: 'Available', stock: 6, available_quantity: 100, availability_status: 'in_stock', image: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=400" },
     ];
 
     let kitchenOrders = [];
@@ -1981,29 +2102,7 @@
       console.log('selectLoginRole executed for:', role);
       selectedRole = role;
 
-      const userSelect = document.getElementById('login-user-select');
-      const userContainer = document.getElementById('user-selection-container');
-
-      // Filter staff by role
-      const filteredStaff = staffList.filter(u => u.role.toLowerCase() === role.toLowerCase());
-
-      // Populate dropdown
-      userSelect.innerHTML = '<option value="" disabled selected>Choose your account</option>';
-      filteredStaff.forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u.id;
-        opt.textContent = u.name;
-        userSelect.appendChild(opt);
-      });
-
-      // Logic: If there's only one user in this role (like Admin), skip the dropdown.
-      if (filteredStaff.length === 1) {
-        userSelect.value = filteredStaff[0].id; // Auto-select the only user
-        userContainer.classList.add('hidden'); // Hide the dropdown
-      } else {
-        userContainer.classList.remove('hidden'); // Show for Waiters etc.
-      }
-
+      // Highlight active role button
       document.querySelectorAll('.role-btn').forEach(btn => {
         const isActive = btn.dataset.role === role;
         btn.className = isActive
@@ -2018,7 +2117,35 @@
           : 'text-xs md:text-sm font-semibold text-gray-600 group-hover:text-primary-dark pointer-events-none';
       });
 
-      // Focus PIN after a small delay to allow animation/DOM updates
+      // *** CUSTOMER: skip PIN, auto-login immediately ***
+      if (role === 'Customer') {
+        const customerUser = staffList.find(u => u.role === 'Customer');
+        if (customerUser) {
+          loginUser(customerUser);
+        }
+        return;
+      }
+
+      // For all other roles: populate user dropdown
+      const userSelect = document.getElementById('login-user-select');
+      const userContainer = document.getElementById('user-selection-container');
+      const filteredStaff = staffList.filter(u => u.role.toLowerCase() === role.toLowerCase());
+
+      userSelect.innerHTML = '<option value="" disabled selected>Choose your account</option>';
+      filteredStaff.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.name;
+        userSelect.appendChild(opt);
+      });
+
+      if (filteredStaff.length === 1) {
+        userSelect.value = filteredStaff[0].id;
+        userContainer.classList.add('hidden');
+      } else {
+        userContainer.classList.remove('hidden');
+      }
+
       setTimeout(() => {
         const pinInput = document.getElementById('login-pin');
         if (pinInput) pinInput.focus();
@@ -2030,56 +2157,64 @@
       const pin = document.getElementById('login-pin').value;
 
       if (!selectedRole) return alert('Select a role first.');
-      if (!userId) return alert('Please select your user account.');
-      if (!pin) return alert('Enter your PIN.');
 
-      // Find user by ID
-      const userToLogin = staffList.find(u => u.id == userId);
-
-      if (!userToLogin || userToLogin.pin !== pin) {
-        alert("Invalid PIN.");
+      // Customer needs no PIN
+      if (selectedRole === 'Customer') {
+        const customerUser = staffList.find(u => u.role === 'Customer');
+        if (customerUser) loginUser(customerUser);
         return;
       }
 
-      if (userToLogin.pin === pin) {
-        currentUser = userToLogin;
-        localStorage.setItem('lastLoggedInUserId', currentUser.id);
+      if (!userId) return alert('Please select your user account.');
+      if (!pin) return alert('Enter your PIN.');
 
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('app-container').classList.remove('hidden');
-        document.getElementById('user-name-display').innerText = currentUser.name;
-        document.getElementById('user-role-label').innerText = currentUser.role;
-        document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${currentUser.avatar || currentUser.name.replace(' ', '+')}&background=10B981&color=fff`;
-
-        // Admin buttons setup
-        if (currentUser.role === 'Admin') document.getElementById('add-product-btn').classList.remove('hidden');
-        else document.getElementById('add-product-btn').classList.add('hidden');
-
-        setupNav();
-        applyLanguage();
-        renderCategories();
-
-        // Workflow Logic: Users land on their respective primary views
-        if (window.postLoginRedirect === 'tables') {
-          window.postLoginRedirect = null;
-          switchView('tables');
-        } else if (currentUser.role === 'Admin' || currentUser.role === 'Manager') {
-          switchView('admin');
-        } else if (currentUser.role === 'Waiter') {
-          switchView('tables');
-        } else if (currentUser.role === 'Chef') {
-          switchView('kitchen');
-        } else if (currentUser.role === 'Cashier') {
-          switchView('orders');
-        } else {
-          switchView('pos'); // Default view for other roles or if no specific role match
-        }
-
-        checkPendingNotifications();
-        saveData(); // Save state on login
-      } else {
-        alert('Invalid PIN (Try 1234)');
+      const userToLogin = staffList.find(u => u.id == userId);
+      if (!userToLogin || userToLogin.pin !== pin) {
+        alert('Invalid PIN. (Try 1234)');
+        return;
       }
+
+      loginUser(userToLogin);
+    }
+
+    function loginUser(user) {
+      currentUser = user;
+      localStorage.setItem('lastLoggedInUserId', currentUser.id);
+
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-container').classList.remove('hidden');
+      document.getElementById('user-name-display').innerText = currentUser.name;
+      document.getElementById('user-role-label').innerText = currentUser.role;
+      document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${currentUser.avatar || currentUser.name.replace(' ', '+')}&background=10B981&color=fff`;
+
+      // Admin buttons setup
+      if (currentUser.role === 'Admin') document.getElementById('add-product-btn').classList.remove('hidden');
+      else document.getElementById('add-product-btn').classList.add('hidden');
+
+      setupNav();
+      applyLanguage();
+      renderCategories();
+
+      // Route by role
+      if (window.postLoginRedirect === 'tables') {
+        window.postLoginRedirect = null;
+        switchView('tables');
+      } else if (currentUser.role === 'Admin' || currentUser.role === 'Manager') {
+        switchView('admin');
+      } else if (currentUser.role === 'Waiter') {
+        switchView('tables');
+      } else if (currentUser.role === 'Chef') {
+        switchView('kitchen');
+      } else if (currentUser.role === 'Cashier') {
+        switchView('orders');
+      } else if (currentUser.role === 'Customer') {
+        switchView('pos');
+      } else {
+        switchView('pos');
+      }
+
+      checkPendingNotifications();
+      saveData();
     }
 
     function logout() {
@@ -2119,13 +2254,18 @@
         items.push({ id: 'pos', label: t('nav_menu'), icon: 'fa-utensils' });
       }
 
-      // Kitchen limited to Chef only per request
+      // Kitchen for Chef
       if (['Chef'].includes(role)) {
         items.push({ id: 'kitchen', label: t('nav_kitchen'), icon: 'fa-fire-burner' });
       }
 
       if (['Admin', 'Manager', 'Cashier', 'Waiter'].includes(role)) {
         items.push({ id: 'orders', label: t('nav_orders'), icon: 'fa-clipboard-list' });
+      }
+
+      // Customer has only access to Menu
+      if (['Customer'].includes(role)) {
+        items = [{ id: 'pos', label: t('nav_menu'), icon: 'fa-utensils' }];
       }
 
       // Handle Settings Button Visibility — hidden for all users in sidebar
@@ -2148,6 +2288,21 @@
 
     function switchView(viewId) {
       const views = ['pos', 'kitchen', 'admin', 'tables', 'settings', 'reservation', 'receipt', 'orders'];
+      const isCustomer = currentUser && currentUser.role === 'Customer';
+
+      // Restrict access if necessary
+      if (viewId === 'admin' && !['Admin', 'Manager'].includes(currentUser.role)) {
+        showToast(t('no_access'), 'error');
+        return;
+      }
+      if (viewId === 'kitchen' && !['Admin', 'Manager', 'Chef'].includes(currentUser.role)) {
+        showToast(t('no_access'), 'error');
+        return;
+      }
+      if (viewId === 'orders' && !['Admin', 'Manager', 'Cashier', 'Waiter'].includes(currentUser.role)) {
+        showToast(t('no_access'), 'error');
+        return;
+      }
 
       // Handling Cart placeholder click to show Cart panel on mobile or focus on desktop
       if (viewId === 'cart') {
@@ -2175,8 +2330,8 @@
         cartPanel.classList.add('cart-mobile-hidden');
       }
 
-      // Waiter routing logic: If no table active, they shouldn't access Menu directly
-      if (viewId === 'pos' && (!activeTableId || tables.find(t => t.id === activeTableId)?.status === 'Available')) {
+      // Waiter routing: require a table. Customer can view without one.
+      if (viewId === 'pos' && (!activeTableId || tables.find(t => t.id === activeTableId)?.status === 'Available') && !isCustomer) {
         showToast(t('toast_select_table'), "warning");
         viewId = 'tables';
       }
@@ -2195,8 +2350,37 @@
         if (viewId === 'tables') renderTablesView();
 
         if (viewId === 'pos') {
-          renderMenu();
-          renderCart();
+          // Hide Cart for Customer
+          const cartPanel = document.getElementById('pos-cart-panel');
+          if (cartPanel) {
+            if (isCustomer) {
+              cartPanel.classList.add('hidden');
+              cartPanel.classList.remove('lg:block', 'flex');
+            } else {
+              cartPanel.classList.remove('hidden');
+              cartPanel.classList.add('lg:block', 'flex');
+            }
+          }
+
+          // Hide Header Controls for Customer
+          const searchInputContainer = document.getElementById('search-input-container');
+          const addProductBtn = document.getElementById('add-product-btn');
+          if (searchInputContainer) {
+            if (isCustomer) searchInputContainer.classList.add('hidden');
+            else searchInputContainer.classList.remove('hidden');
+          }
+          if (addProductBtn) {
+            if (isCustomer) addProductBtn.classList.add('hidden');
+            else if (currentUser.role === 'Admin' || currentUser.role === 'Manager') addProductBtn.classList.remove('hidden');
+          }
+
+          if (activeTableId || isCustomer) {
+            renderMenu();
+            renderCart();
+          } else {
+            switchView('tables');
+            return;
+          }
         }
 
         // Hide mobile cart button if leaving POS
@@ -2518,8 +2702,10 @@
       const countEl = document.getElementById('active-staff-count');
       const addBtn = document.getElementById('add-staff-btn');
 
-      if (currentUser.role === 'Admin') addBtn.classList.remove('hidden');
-      else addBtn.classList.add('hidden');
+      if (addBtn) { // Added null check for addBtn
+        if (currentUser.role === 'Admin') addBtn.classList.remove('hidden');
+        else addBtn.classList.add('hidden');
+      }
 
       const activeCount = staffList.filter(s => s.status === 'Active').length;
       if (countEl) countEl.innerText = activeCount;
@@ -3349,6 +3535,53 @@
       }
     });
 
+    // --- Category Drag-to-Scroll (Desktop Mouse & Touch Fallback) ---
+    document.addEventListener('DOMContentLoaded', function () {
+      const slider = document.getElementById('category-container');
+      if (!slider) return;
+
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+      let hasDragged = false;
+
+      slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        hasDragged = false;
+        slider.style.cursor = 'grabbing';
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+      slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+      });
+      slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+      });
+      slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2; // Scroll-fast multiplier
+        if (Math.abs(walk) > 5) hasDragged = true;
+        slider.scrollLeft = scrollLeft - walk;
+      });
+
+      // Prevent click on category buttons if we just dragged
+      slider.addEventListener('click', (e) => {
+        if (hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          hasDragged = false;
+        }
+      }, true);
+
+      // Default cursor
+      slider.style.cursor = 'grab';
+    });
+
     // --- POS LOGIC ---
     function renderCategories() {
       const container = document.getElementById('category-container');
@@ -3360,7 +3593,7 @@
         const count = cat.id === 'all' ? products.length : products.filter(p => p.category === cat.id).length;
         return `
                 <div onclick="setCategory('${cat.id}')" 
-                     class="cursor-pointer min-w-[100px] md:min-w-[140px] p-2.5 md:p-4 rounded-3xl border transition-all flex flex-col items-start gap-2.5 md:gap-4 relative group ${activeCategory === cat.id ? 'bg-primary/10 border-primary shadow-sm' : 'bg-white dark:bg-gray-800 border-transparent hover:border-gray-200 dark:hover:border-gray-600'}">
+                     class="cursor-pointer flex-shrink-0 min-w-[100px] md:min-w-[110px] p-3 md:p-4 rounded-3xl border transition-all flex flex-col items-center justify-center gap-2 md:gap-3 relative group ${activeCategory === cat.id ? 'bg-[#ecfdf5] border-[#10b981] shadow-sm' : 'bg-white border-transparent hover:border-gray-200'}">
                     
                     ${isAdmin && cat.id !== 'all' ? `
                     <div class="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -3369,12 +3602,12 @@
                     </div>
                     ` : ''}
 
-                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm md:text-lg ${activeCategory === cat.id ? 'bg-primary text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-400'}">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-lg transition-colors ${activeCategory === cat.id ? 'bg-[#10b981] text-white' : 'bg-gray-100 text-gray-400 group-hover:text-gray-600'}">
                         <i class="fa-solid ${cat.icon}"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-xs md:text-base text-gray-800 dark:text-white ${activeCategory === cat.id ? 'text-primary-dark' : ''}">${cat.name}</h3>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-300">${count} items</p>
+                    <div class="text-center">
+                        <h3 class="font-bold text-xs md:text-sm text-gray-800 transition-colors ${activeCategory === cat.id ? 'text-[#10b981]' : ''}">${cat.name}</h3>
+                        <p class="text-[10px] text-gray-400 mt-0.5">${count} items</p>
                     </div>
                 </div>
             `;
@@ -3383,7 +3616,7 @@
       if (isAdmin) {
         html += `
                 <div onclick="openCategoryModal()" 
-                     class="cursor-pointer min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-primary transition-all flex flex-col items-center justify-center gap-2 group">
+                     class="cursor-pointer flex-shrink-0 min-w-[120px] md:min-w-[140px] p-3 md:p-4 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-primary transition-all flex flex-col items-center justify-center gap-2 group">
                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-colors">
                         <i class="fa-solid fa-plus"></i>
                     </div>
@@ -3393,6 +3626,9 @@
       }
 
       container.innerHTML = html;
+
+      // Update scroll buttons after categories render
+      setTimeout(updateCategoryScrollButtons, 50);
     }
 
     function setCategory(id) {
@@ -3406,8 +3642,14 @@
       if (!container) return;
 
       const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+      const isCustomer = currentUser && currentUser.role === 'Customer';
 
       const filtered = products.filter(p => {
+        // Customer restrictions: only 'Available' and stock > 0
+        if (isCustomer) {
+          if (p.status !== 'Available' || p.stock <= 0) return false;
+        }
+
         const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
         const matchesSearch = p.name.toLowerCase().includes(searchTerm);
         return matchesCategory && matchesSearch;
@@ -3420,12 +3662,18 @@
       container.innerHTML = filtered.map(item => {
         const inCart = activeTable && activeTable.cart.find(c => c.id === item.id);
         const qty = inCart ? inCart.qty : 0;
+        const isUnavailable = item.availability_status === 'currently_unavailable';
 
         return `
-                <div class="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-md transition-all border ${inCart ? 'border-primary' : 'border-transparent'} flex flex-col items-center text-center relative overflow-hidden group">
+                <div class="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-md transition-all border ${inCart ? 'border-primary' : 'border-transparent'} flex flex-col items-center text-center relative overflow-hidden group ${isUnavailable ? 'opacity-50 grayscale-[50%]' : ''}">
                     
+                    ${isUnavailable ? `
+                    <div class="absolute inset-0 bg-gray-50/60 dark:bg-gray-900/60 z-10 flex items-center justify-center rounded-[1.5rem] md:rounded-[2rem] pointer-events-none">
+                        <span class="bg-red-100 text-red-600 text-[10px] md:text-sm font-black px-3 py-1.5 rounded-full shadow-sm tracking-wide uppercase">Currently Unavailable</span>
+                    </div>` : ''}
+
                     ${isAdmin ? `
-                    <div class="absolute top-4 left-4 flex gap-1 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute top-4 left-4 flex gap-1 z-20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onclick="event.stopPropagation(); openAddProductModal(${item.id})" class="w-7 h-7 rounded-full bg-white text-blue-500 shadow-md hover:bg-blue-50 flex items-center justify-center text-xs"><i class="fa-solid fa-pen"></i></button>
                         <button onclick="event.stopPropagation(); deleteProduct(${item.id})" class="w-7 h-7 rounded-full bg-white text-red-500 shadow-md hover:bg-red-50 flex items-center justify-center text-xs"><i class="fa-solid fa-trash"></i></button>
                     </div>
@@ -3436,15 +3684,18 @@
                     </div>
                     <h3 class="font-bold text-gray-800 dark:text-white text-xs md:text-sm leading-tight mb-1 md:mb-2 h-8 md:h-10 overflow-hidden px-1">${item.name}</h3>
                     <div class="text-primary font-bold mb-3 md:mb-4 text-sm md:text-base">$${item.price.toFixed(2)}</div>
-                    ${qty > 0 ? `
-                        <div class="flex items-center gap-2 md:gap-4 bg-gray-100 dark:bg-gray-700 rounded-xl px-2 py-1 w-full justify-between">
-                            <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white dark:bg-gray-600 text-gray-600 dark:text-white shadow-sm hover:text-red-500 flex items-center justify-center font-bold text-sm ${!canModify ? 'opacity-50 cursor-not-allowed' : ''}">-</button>
-                            <span class="font-bold text-gray-800 dark:text-white w-4 text-sm md:text-base">${qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary text-white shadow-sm hover:bg-primary-dark flex items-center justify-center font-bold text-sm ${!canModify ? 'opacity-50 cursor-not-allowed' : ''}">+</button>
-                        </div>
-                    ` : `
-                        <button onclick="addToCart(${item.id})" class="w-full py-2 md:py-3 bg-primary/10 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-all text-xs md:text-sm ${!canModify ? 'opacity-50 cursor-not-allowed' : ''}">Add to Dish</button>
-                    `}
+                    
+                    ${!isCustomer ? `
+                        ${qty > 0 ? `
+                            <div class="flex items-center gap-2 md:gap-4 bg-gray-100 dark:bg-gray-700 rounded-xl px-2 py-1 w-full justify-between relative z-20">
+                                <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white dark:bg-gray-600 text-gray-600 dark:text-white shadow-sm hover:text-red-500 flex items-center justify-center font-bold text-sm ${!canModify ? 'opacity-50 cursor-not-allowed' : ''}">-</button>
+                                <span class="font-bold text-gray-800 dark:text-white w-4 text-sm md:text-base">${qty}</span>
+                                <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary text-white shadow-sm hover:bg-primary-dark flex items-center justify-center font-bold text-sm ${!canModify || isUnavailable ? 'opacity-50 cursor-not-allowed' : ''}" ${isUnavailable ? 'disabled' : ''}>+</button>
+                            </div>
+                        ` : `
+                            <button onclick="addToCart(${item.id})" class="w-full py-2 md:py-3 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-all text-xs md:text-sm relative z-20 ${!canModify || isUnavailable ? 'opacity-50 cursor-not-allowed' : ''}" ${isUnavailable ? 'disabled' : ''}>Add to Dish</button>
+                        `}
+                    ` : ''}
                 </div>
             `}).join('');
     }
@@ -3458,11 +3709,18 @@
         return;
       }
 
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      if (item.availability_status === 'currently_unavailable') {
+        showToast(`❌ ${item.name} is Currently Unavailable`, 'error');
+        return;
+      }
+
       const existing = activeTable.cart.find(c => c.id === id);
       if (existing) {
         existing.qty += 1;
       } else {
-        const item = products.find(p => p.id === id);
         activeTable.cart.push({ ...item, qty: 1 });
       }
       renderMenu();
@@ -3475,6 +3733,12 @@
       const activeTable = tables.find(t => t.id === activeTableId);
       if (!canEditOrder(activeTable)) {
         showToast(t('toast_cannot_modify_sent'), "warning");
+        return;
+      }
+
+      const item = products.find(p => p.id === id);
+      if (delta > 0 && item && item.availability_status === 'currently_unavailable') {
+        showToast(`❌ ${item.name} is Currently Unavailable`, 'error');
         return;
       }
 
@@ -3737,6 +4001,29 @@
           activeTable.status = STATUS.SENT;
           activeTable.timestamps.sent = new Date();
 
+          // Deduct stock silently
+          activeTable.cart.forEach(cartItem => {
+            const product = products.find(p => p.id === cartItem.id);
+            if (product) {
+              const prevQty = product.available_quantity;
+              product.available_quantity = Math.max(0, product.available_quantity - cartItem.qty);
+
+              if (product.available_quantity === 0) {
+                product.availability_status = 'currently_unavailable';
+              }
+
+              auditLog.push({
+                type: 'auto_stock_deduct',
+                itemId: product.id,
+                itemName: product.name,
+                previousQty: prevQty,
+                newQty: product.available_quantity,
+                updatedBy: 'System (Order Sent)',
+                timestamp: new Date().toISOString()
+              });
+            }
+          });
+
           // Start 30-Second Recall Timer
           activeTable.recallRemaining = 30;
           if (activeTable.recallTimer) clearInterval(activeTable.recallTimer);
@@ -3766,6 +4053,30 @@
           // If clicked while SENT and there's time remaining, Recall it!
           if (activeTable.recallRemaining > 0) {
             kitchenOrders = kitchenOrders.filter(o => o.tableId !== activeTable.id || o.status !== 'new');
+
+            // Restore stock silently
+            activeTable.cart.forEach(cartItem => {
+              const product = products.find(p => p.id === cartItem.id);
+              if (product) {
+                const prevQty = product.available_quantity;
+                product.available_quantity += cartItem.qty;
+
+                if (product.available_quantity > 0) {
+                  product.availability_status = 'in_stock';
+                }
+
+                auditLog.push({
+                  type: 'auto_stock_restore',
+                  itemId: product.id,
+                  itemName: product.name,
+                  previousQty: prevQty,
+                  newQty: product.available_quantity,
+                  updatedBy: 'System (Order Recalled)',
+                  timestamp: new Date().toISOString()
+                });
+              }
+            });
+
             activeTable.status = STATUS.OCCUPIED;
             if (activeTable.recallTimer) clearInterval(activeTable.recallTimer);
             activeTable.recallTimer = null;
@@ -4043,11 +4354,217 @@
       }
     }
 
+    // --- CHEF STOCK MANAGEMENT ---
+    function toggleStockPanel() {
+      const panel = document.getElementById('stock-management-panel');
+      const chevron = document.getElementById('stock-panel-chevron');
+      if (panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+        renderStockPanel();
+      } else {
+        panel.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function renderStockPanel() {
+      const list = document.getElementById('stock-items-list');
+      if (!list) return;
+      list.innerHTML = products.map(item => {
+        const isUnavail = item.availability_status === 'currently_unavailable';
+        return `
+          <div class="flex items-center gap-3 px-4 py-3">
+            <img src="${item.image}" class="w-10 h-10 rounded-xl object-cover">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-gray-800 dark:text-white truncate">${item.name}</p>
+              <p class="text-xs ${isUnavail ? 'text-red-400' : 'text-emerald-500'} font-semibold">
+                ${isUnavail ? '⛔ Currently Unavailable' : `✅ ${item.available_quantity} portions left`}
+              </p>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <input type="number" min="0" value="${item.available_quantity}" id="stock-qty-${item.id}"
+                class="w-16 text-center text-sm font-bold border border-gray-200 dark:border-gray-600 rounded-lg py-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+              <button onclick="markUnavailableToggle(${item.id})"
+                class="w-8 h-8 rounded-lg border ${isUnavail ? 'border-red-300 bg-red-50 text-red-500' : 'border-gray-200 bg-gray-50 text-gray-400'} flex items-center justify-center text-xs hover:opacity-80 transition"
+                title="${isUnavail ? 'Currently Unavailable (click to restore)' : 'Mark Unavailable'}">
+                <i class="fa-solid fa-ban"></i>
+              </button>
+              <button onclick="updateStock(${item.id})"
+                class="h-8 px-3 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-dark transition active:scale-95">
+                Set
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function notifyAllStaff(message) {
+      // Notify everyone except active Customers
+      const staffMembers = users.filter(u => u.role !== 'Customer');
+      staffMembers.forEach(staff => {
+        pendingNotifications.push({
+          targetUserId: staff.id,
+          message: message
+        });
+      });
+      checkPendingNotifications();
+    }
+
+    function markUnavailableToggle(id) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+
+      const wasInStock = item.availability_status === 'in_stock';
+
+      if (item.availability_status === 'currently_unavailable') {
+        // Restore: set to 10 so chef can then set proper amount
+        item.available_quantity = 10;
+        item.availability_status = 'in_stock';
+      } else {
+        item.available_quantity = 0;
+        item.availability_status = 'currently_unavailable';
+
+        if (wasInStock) {
+          notifyAllStaff(`🚨 ${item.name} is now Currently Unavailable!`);
+        }
+      }
+      auditLog.push({ type: 'manual_toggle', itemId: id, itemName: item.name, newStatus: item.availability_status, updatedBy: currentUser.name, timestamp: new Date().toISOString() });
+      renderStockPanel();
+      renderMenu();
+      saveData();
+    }
+
+    function updateStock(id) {
+      const item = products.find(p => p.id === id);
+      if (!item) return;
+      const input = document.getElementById(`stock-qty-${id}`);
+      if (!input) return;
+      const newQty = parseInt(input.value, 10);
+      if (isNaN(newQty) || newQty < 0) {
+        showToast('Please enter a valid quantity (0 or more)', 'error');
+        return;
+      }
+
+      const prevQty = item.available_quantity;
+      const wasInStock = item.availability_status === 'in_stock';
+
+      item.available_quantity = newQty;
+      item.availability_status = newQty > 0 ? 'in_stock' : 'currently_unavailable';
+
+      // We ONLY notify if they EXPLICITLY set the number to 0 manually and it was previously in stock.
+      if (item.availability_status === 'currently_unavailable' && wasInStock) {
+        notifyAllStaff(`🚨 ${item.name} is now Currently Unavailable!`);
+      }
+
+      auditLog.push({
+        type: 'manual_stock_update',
+        itemId: id,
+        itemName: item.name,
+        previousQty: prevQty,
+        newQty: newQty,
+        updatedBy: currentUser.name,
+        timestamp: new Date().toISOString()
+      });
+      showToast(`✅ ${item.name} stock set to ${newQty}`, 'success');
+      renderStockPanel();
+      renderMenu();
+      saveData();
+    }
+
     // --- KITCHEN LOGIC ---
+    function renderUnavailableSidebar() {
+      const list = document.getElementById('unavailable-sidebar-list');
+      const empty = document.getElementById('unavailable-sidebar-empty');
+      const mobileStrip = document.getElementById('unavailable-mobile-strip');
+
+      const unavailableItems = products.filter(p => p.availability_status === 'currently_unavailable');
+
+      // --- Mobile strip ---
+      if (mobileStrip) {
+        if (unavailableItems.length === 0) {
+          mobileStrip.classList.add('hidden');
+          mobileStrip.innerHTML = '';
+        } else {
+          mobileStrip.classList.remove('hidden');
+          mobileStrip.innerHTML = `
+            <div class="flex items-center gap-1 mb-2">
+              <div class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+              <span class="text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-wider">${t('out_of_stock')}</span>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+              ${unavailableItems.map(item => `
+                <div class="flex-shrink-0 flex items-center gap-2 bg-white dark:bg-gray-800 rounded-xl px-3 py-2 border border-red-100 dark:border-red-900/30 shadow-sm">
+                  <img src="${item.image}" class="w-7 h-7 rounded-lg object-cover flex-shrink-0">
+                  <span class="text-xs font-bold text-gray-800 dark:text-white whitespace-nowrap max-w-[100px] truncate">${item.name}</span>
+                  <button onclick="restoreFromSidebar(${item.id})"
+                    class="text-emerald-600 bg-emerald-50 border border-emerald-200 text-[10px] font-bold px-2 py-1 rounded-lg hover:bg-emerald-100 transition whitespace-nowrap">
+                    ${t('stock_available')}
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+      }
+
+      // --- Desktop sidebar ---
+      if (!list) return;
+
+      if (unavailableItems.length === 0) {
+        list.innerHTML = '';
+        list.classList.add('hidden');
+        if (empty) {
+          empty.classList.remove('hidden');
+          const emptyMsg = empty.querySelector('p');
+          if (emptyMsg) emptyMsg.textContent = t('stock_all_available');
+        }
+        return;
+      }
+
+      if (empty) empty.classList.add('hidden');
+      list.classList.remove('hidden');
+
+      list.innerHTML = unavailableItems.map(item => `
+        <div class="flex items-center gap-3 px-3 py-3 hover:bg-white dark:hover:bg-gray-700 transition rounded-xl mx-2 my-1">
+          <div class="relative flex-shrink-0">
+            <img src="${item.image}" class="w-11 h-11 rounded-xl object-cover">
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+              <i class="fa-solid fa-xmark text-white text-[8px]"></i>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-gray-800 dark:text-white leading-tight truncate">${item.name}</p>
+            <p class="text-[10px] text-red-400 font-semibold mt-0.5">${t('stock_out_of_stock_label')}</p>
+          </div>
+          <button onclick="restoreFromSidebar(${item.id})"
+            class="flex-shrink-0 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700 text-[10px] font-bold px-2 py-1.5 rounded-lg hover:bg-emerald-100 transition active:scale-95"
+            title="${t('stock_available')}">
+            <i class="fa-solid fa-rotate-left mr-1"></i>${t('stock_available')}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function restoreFromSidebar(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      product.availability_status = 'in_stock';
+      product.available_quantity = 10;
+      auditLog.push({ type: 'sidebar_restore', itemId: productId, itemName: product.name, updatedBy: currentUser.name, timestamp: new Date().toISOString() });
+      showToast(`✅ ${product.name} is now Available`, 'success');
+      renderUnavailableSidebar();
+      renderMenu();
+      saveData();
+    }
+
     function renderKitchen() {
       const grid = document.getElementById('kitchen-grid');
       const empty = document.getElementById('kitchen-empty');
       if (!grid) return;
+
+      renderUnavailableSidebar();
 
       if (kitchenOrders.length === 0) {
         grid.innerHTML = '';
@@ -4138,9 +4655,17 @@
 
     }
 
+    let _pendingReadyOrderId = null;
+
     function updateKitchenStatus(orderId, nextStatus) {
       const kOrder = kitchenOrders.find(o => o.id === orderId);
       if (!kOrder) return;
+
+      if (nextStatus === 'ready') {
+        // Intercept: show availability check modal first
+        showAvailabilityModal(orderId);
+        return;
+      }
 
       kOrder.status = nextStatus;
 
@@ -4148,14 +4673,6 @@
       if (table) {
         if (nextStatus === 'preparing') {
           table.status = STATUS.PREPARING;
-        } else if (nextStatus === 'ready') {
-          table.status = STATUS.READY;
-          pendingNotifications.push({
-            targetUserId: kOrder.waiterId,
-            message: `Order for ${kOrder.tableId} is Ready to Serve!`
-          });
-
-          kitchenOrders = kitchenOrders.filter(o => o.id !== orderId);
         }
       }
 
@@ -4164,7 +4681,99 @@
       saveData();
     }
 
-    // --- NOTIFICATION SYSTEM ---
+    function showAvailabilityModal(orderId) {
+      _pendingReadyOrderId = orderId;
+      const kOrder = kitchenOrders.find(o => o.id === orderId);
+      if (!kOrder) return;
+
+      const container = document.getElementById('availability-check-items');
+      container.innerHTML = kOrder.items.map(cartItem => {
+        const product = products.find(p => p.id === cartItem.id);
+        if (!product) return '';
+        const isUnavail = product.availability_status === 'currently_unavailable';
+        return `
+          <div class="flex items-center gap-3 px-5 py-4">
+            <img src="${product.image}" class="w-10 h-10 rounded-xl object-cover flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-gray-800 dark:text-white truncate">${product.name}</p>
+              <p class="text-xs text-gray-400">${t('avail_ordered')}: ${cartItem.qty}</p>
+            </div>
+            <button id="avail-btn-${product.id}" onclick="toggleAvailabilityFromCheck(${product.id})"
+              class="${isUnavail
+            ? 'bg-red-100 text-red-500 border border-red-200'
+            : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+          } text-xs font-bold px-3 py-2 rounded-xl transition hover:opacity-80 whitespace-nowrap">
+              ${isUnavail ? t('avail_out_of_stock') : t('avail_still_available')}
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('availability-check-modal').classList.remove('hidden');
+    }
+
+    function toggleAvailabilityFromCheck(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const wasInStock = product.availability_status === 'in_stock';
+      const btn = document.getElementById(`avail-btn-${productId}`);
+
+      if (wasInStock) {
+        product.availability_status = 'currently_unavailable';
+        product.available_quantity = 0;
+        if (btn) {
+          btn.className = 'bg-red-100 text-red-500 border border-red-200 text-xs font-bold px-3 py-2 rounded-xl transition hover:opacity-80 whitespace-nowrap';
+          btn.textContent = t('avail_out_of_stock');
+        }
+      } else {
+        product.availability_status = 'in_stock';
+        product.available_quantity = 10;
+        if (btn) {
+          btn.className = 'bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold px-3 py-2 rounded-xl transition hover:opacity-80 whitespace-nowrap';
+          btn.textContent = t('avail_still_available');
+        }
+      }
+    }
+
+    function closeAvailabilityModal() {
+      document.getElementById('availability-check-modal').classList.add('hidden');
+      _pendingReadyOrderId = null;
+    }
+
+    function confirmAvailabilityAndMarkReady() {
+      const orderId = _pendingReadyOrderId;
+      if (orderId === null) return;
+
+      const kOrder = kitchenOrders.find(o => o.id === orderId);
+      if (kOrder) {
+        kOrder.status = 'ready';
+        const table = tables.find(t => t.id === kOrder.tableId);
+        if (table) {
+          table.status = STATUS.READY;
+          pendingNotifications.push({
+            targetUserId: kOrder.waiterId,
+            message: `Order for ${kOrder.tableId} is Ready to Serve!`
+          });
+        }
+        kitchenOrders = kitchenOrders.filter(o => o.id !== orderId);
+
+        // Notify about any items now marked unavailable
+        kOrder.items.forEach(cartItem => {
+          const product = products.find(p => p.id === cartItem.id);
+          if (product && product.availability_status === 'currently_unavailable') {
+            notifyAllStaff(`🚨 ${product.name} is now Currently Unavailable!`);
+          }
+        });
+      }
+
+      closeAvailabilityModal();
+      renderKitchen();
+      renderMenu();
+      checkPendingNotifications();
+      saveData();
+    }
+
     function checkPendingNotifications() {
       if (!currentUser) return;
 
@@ -4257,6 +4866,49 @@
         });
       }
     });
+
+    // --- Category Scroll Buttons Logic ---
+    function scrollMainArea(amount) {
+      const container = document.getElementById('main-scroll-area');
+      if (!container) return;
+      container.scrollBy({ top: amount, behavior: 'smooth' });
+    }
+
+    function scrollCategories(amount) {
+      const container = document.getElementById('category-container');
+      if (!container) return;
+      container.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    function updateCategoryScrollButtons() {
+      const container = document.getElementById('category-container');
+      const leftBtn = document.getElementById('scroll-cat-left');
+      const rightBtn = document.getElementById('scroll-cat-right');
+
+      if (!container || !leftBtn || !rightBtn) return;
+
+      // Group hover triggers them, but we completely hide them if there's no scroll needed
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (container.scrollLeft > 5) {
+        leftBtn.classList.remove('opacity-0', 'pointer-events-none');
+        leftBtn.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        leftBtn.classList.add('opacity-0', 'pointer-events-none');
+        leftBtn.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+
+      if (container.scrollLeft < maxScroll - 5 && maxScroll > 0) {
+        rightBtn.classList.remove('opacity-0', 'pointer-events-none');
+        rightBtn.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        rightBtn.classList.add('opacity-0', 'pointer-events-none');
+        rightBtn.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    }
+
+    // Bind resize to update buttons constraints
+    window.addEventListener('resize', updateCategoryScrollButtons);
 
     // --- TABLE RELEASE MODAL HELPERS (see HTML modal below) ---
   </script>
